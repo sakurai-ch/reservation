@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
-import router from "../router/index";
 
 Vue.use(Vuex)
 
@@ -37,6 +36,7 @@ export default new Vuex.Store({
           id: 1,
         }
       );
+      console.log(responseLogin);
       commit("auth", responseLogin.data.auth);
       commit("user_id", responseLogin.data.id);
       const responseUser = await axios.get(
@@ -46,15 +46,12 @@ export default new Vuex.Store({
       commit("email", responseUser.data.email);
     },
 
-    logout({ commit }) {
-      axios.post("http://localhost:3000/logout",{
+    async logout({ commit }) {
+      const responseLogout = await axios.post("http://localhost:3000/logout", {
         auth: false
-      })
-      .then((response) => {
-        console.log(response);
-        commit("auth", response.data.auth);
-        router.replace("/");
-      })
+      });
+      console.log(responseLogout);
+      commit("auth", responseLogout.data.auth);
     },
   },
   modules: {

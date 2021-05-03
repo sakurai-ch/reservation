@@ -1,24 +1,73 @@
 <template>
   <div class="home">
-    <div class="search">
-      <div>
-        エリア
-        <select type="text">
-          <option value=""></option>
-          <option v-for="(area_data, index) in areas_data" :key="index" value=area_data.area_id>{{area_data.area_name}}</option>
-        </select>
+    <div class="store-search flex no-flex">
+      <div class="flex flex-end">
+        <div><p>エリア</p></div>
+        <div
+          class="input-box input-width184 input-width60p"
+        >
+          <select 
+            type="text" 
+            v-model="saerchData.area_name"
+            class="input-box-select"
+          >
+            <option value=""></option>
+            <option 
+              v-for="areaData in areasData" 
+              :key="areaData.id"
+            >{{cutAreaName(areaData.area_name)}}</option>
+          </select>
+        </div>
       </div>
-      <div>ジャンル
-        <select type="text">
-          <option value=""></option>
-          <option v-for="(genre_data, index) in genres_data" :key="index" value=genre_data.genre_id>{{genre_data.genre_name}}</option>
-        </select></div>
-      <div>店名<input type="text"></div>
-      <button>検索</button>
+      <div class="flex flex-end">
+        <div><p>ジャンル</p></div>
+        <div
+          class="input-box input-width184 input-width60p"
+        >
+          <select 
+            type="text" 
+            v-model="saerchData.genre_name" 
+            class="input-box-select" 
+          >
+            <option></option>
+            <option 
+              v-for="genreData in genresData" 
+              :key="genreData.id" 
+            >{{genreData.genre_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-end">
+        <div><p>店名</p></div>
+        <div
+          class="input-box input-width184 input-width60p"
+        >
+          <input 
+            type="text" 
+            v-model="saerchData.store_name"
+            class="input-box-input"
+          >
+        </div>
+      </div>
+      <button 
+        @click="storeSaerch()" 
+        class="input-box input-box-button input-width122"
+      >検索</button>
     </div>
-    <div>
-      <div v-for="(store_data,index) in stores_data" :key="index">
-        <StoreBox :store_data = store_data></StoreBox>
+
+    <div class="store-boxes">
+      <div 
+        v-for="storeData in storesData" 
+        :key="storeData.id"
+      >
+        <StoreBox 
+          v-if="storeData.select" 
+          key="userSelect"
+          :storeData = "storeData"
+          @favoriteDelete="favoriteDelete" 
+          @favoritePost="favoritePost" 
+          class="store-box"
+        ></StoreBox>
       </div>
     </div>
   </div>
@@ -29,36 +78,136 @@ import StoreBox from '../components/StoreBox.vue'
 import axios from "axios";
 
 export default {
-  // name: 'Home',
   components: {
     StoreBox
   },
   data(){
     return{
-      stores_data:"",
-      areas_data:"",
-      genres_data:"",
+      storesData:"",
+      areasData:"",
+      genresData:"",
+      saerchData:{
+        area_name:"", 
+        genre_name:"", 
+        store_name:""
+      },
     }
   },
-  created(){
-    axios.get("http://localhost:3000/stores_data")
-    .then((response) => {this.stores_data = response.data;});
-    axios.get("http://localhost:3000/areas_data")
-    .then((response) => {this.areas_data = response.data;});
-    axios.get("http://localhost:3000/genres_data")
-    .then((response) => {this.genres_data = response.data;});
+  methods:{
+    cutAreaName(areaName){
+      return areaName.substr(0, areaName.length-1);
+    },
+    
+    storeSaerch(){
+      for(let storeData of this.storesData){
+        let existsAreaId;
+        if(storeData.area.area_name.includes(this.saerchData.area_name)){
+          existsAreaId = true;
+        }else{
+          existsAreaId = false;
+        }
+
+        let existsGenreId;
+        if(storeData.genre.genre_name.includes(this.saerchData.genre_name)){
+          existsGenreId = true;
+        }else{
+          existsGenreId = false;
+        }
+
+        let existsStoreName;
+        if(storeData.store_name.includes(this.saerchData.store_name)){
+          existsStoreName = true;
+        }else{
+          existsStoreName = false;
+        }
+        
+        if(existsAreaId && existsGenreId && existsStoreName){
+          storeData.select = true;
+        }else{
+          storeData.select = false;
+        }
+      }
+      this.$forceUpdate();
+    },
+
+    favoriteDelete(store_id){
+      for(let storeData of this.storesData){
+        if(storeData.id == store_id){
+          storeData.user_id = null;
+        }
+      }
+    },
+
+    favoritePost(store_id){
+      for(let storeData of this.storesData){
+        if(storeData.id == store_id){
+          storeData.user_id = this.$store.state.user_id;
+        }
+      }
+    },
+  },
+
+  async created(){
+    const storesDataPromise = axios.get("http://localhost:3000/stores_data");
+    const areasDataPromise = axios.get("http://localhost:3000/areas_data");
+    const genresDataPromise = axios.get("http://localhost:3000/genres_data");
+    this.storesData = (await storesDataPromise).data;
+    this.areasData = (await areasDataPromise).data;
+    this.genresData = (await genresDataPromise).data;
+
+    for(let storeData of this.storesData){
+      storeData["select"] = true;
+    }
   }
 }
 </script>
 
 <style scoped>
-.search{
-  display: flex;
-  justify-content: center;
+.home{
+  margin: 20px auto;
 }
 
-select{
-  width:100px;
+.store-boxes{
+  display: flex;
+  flex-wrap:wrap;
+  margin-bottom: 30px;
+} 
+
+.store-box{
+  margin: 10px;
+} 
+
+@media screen and (max-width : 480px){
+  .no-flex{
+    display: initial;
+    align-items: initial;
+    justify-content: initial;
+  }
+  
+  .store-search{
+    margin-top: 100px;
+  }
+
+  .input-box{
+    margin-right: 20px;
+  }
+
+  .input-width60p{
+    width: 60%;
+  }
+
+  .store-boxes{
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .store-boxes div{
+    width: 95%;
+  }
+
+  .store-box{
+    margin: 8px auto;
+  }
 }
 
 </style>
