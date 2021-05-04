@@ -94,9 +94,10 @@ export default {
   components: {
     StoreFavorite
   },
-  props: {
-    shop_id: String,
-  },
+  // props: {
+    //   shop_id: Number,
+  // },
+  props: ["shop_id"],
   data(){
     return {
       reservationData:{
@@ -118,7 +119,7 @@ export default {
   },
   methods: {
     async reservationPost(){
-      const response = await axios.post("http://localhost:3000/reservation_post", this.reservationData);
+      const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
       console.log(response);
       router.push({path: '/done'});
     },
@@ -178,8 +179,10 @@ export default {
     },
   },
   async created(){
-    const response = await axios.get("http://localhost:3000/store_data_" + this.shop_id);
-    this.storeData = response.data;
+    const response = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id,{
+      params: {user_id : this.$store.state.user_id}
+    });
+    this.storeData = response.data.data;
 
     this.createSelectableDate();
     this.createSelectableTime();

@@ -90,10 +90,10 @@ export default {
     },
 
     async register() {
-      const response = await axios.post("http://localhost:3000/user_data_1", {
-        id: 1,
-        user_name: "一郎",
-        email: "ichiro@aaa@com"
+      const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
+        user_name: this.user_name,
+        email: this.email,
+        password: this.password
       });
       console.log(response);
       this.$store.dispatch("login", {

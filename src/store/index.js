@@ -11,7 +11,7 @@ export default new Vuex.Store({
     auth: "",
     user_id: "",
     user_name: "",
-    email: ""
+    email: "",
   },
   mutations: {
     auth(state, payload) {
@@ -28,30 +28,34 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async login({ commit }) {
+    async login({ commit }, {email, password}) {
       const responseLogin = await axios.post(
-        "http://localhost:3000/login",
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/login",
         {
-          auth: true,
-          id: 1,
-        }
-      );
+          email: email,
+          password: password,
+        });
       console.log(responseLogin);
       commit("auth", responseLogin.data.auth);
       commit("user_id", responseLogin.data.id);
+
       const responseUser = await axios.get(
-        "http://localhost:3000/user_data_" + this.state.user_id
-      );
-      commit("user_name", responseUser.data.user_name);
-      commit("email", responseUser.data.email);
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
+          params: { user_id : this.state.user_id }
+      });
+      commit("user_name", responseUser.data.data.user_name);
+      commit("email", responseUser.data.data.email);
     },
 
     async logout({ commit }) {
-      const responseLogout = await axios.post("http://localhost:3000/logout", {
-        auth: false
+      const responseLogout = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/logout", {
+        auth: this.state.auth
       });
       console.log(responseLogout);
       commit("auth", responseLogout.data.auth);
+      commit("user_id", "");
+      commit("user_name", "");
+      commit("email", "");
     },
   },
   modules: {

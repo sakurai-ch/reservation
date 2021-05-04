@@ -1,7 +1,7 @@
 <template>
   <div class="my-page">
     <div><p class="title">マイページ</p></div>
-    <div class="flex no-flex">
+    <div class="flex no-flex top">
       <div class="left-side">
         <div class="my-data">
           <p class="sub-title">■名前</p>
@@ -23,7 +23,7 @@
               </div>
               <div class="potition-top">
                 <button 
-                  @click="reservationDalete(reservationData)" 
+                  @click="reservationDalete()" 
                   class="input-box input-height32 input-box-button"
                 >取消</button>
               </div>
@@ -65,11 +65,12 @@ export default {
     };
   },
   methods: {
-    async reservationDalete(reservationData){
-      const response = await axios.delete("http://localhost:3000/reservation_delete", {
-        id: reservationData.id
+    async reservationDalete(){
+      const response = await axios.delete("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
+        params: {reservation_id: this.reservationData.id}
       });
       console.log(response);
+      this.$forceUpdate();
     },
 
     favoriteDelete(store_id){
@@ -89,30 +90,33 @@ export default {
     }
   },
   async created(){
-    const storesDataPromise = axios.get("http://localhost:3000/stores_data");
-    const responsesDataPromise = axios.get("http://localhost:3000/reservations_data_" + this.$store.state.user_id);
-    this.storesData = (await storesDataPromise).data;
-    this.reservationsData = (await responsesDataPromise).data;
+    const storesDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store", {
+      params: {user_id : this.$store.state.user_id}
+    });
+    const reservationDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
+      params: {user_id : this.$store.state.user_id}
+    });
+    this.storesData = (await storesDataPromise).data.data;
+    this.reservationsData = (await reservationDataPromise).data.data;
   }
 }
 </script>
 
 <style scoped>
-/* .my-page{
-  margin: 0 auto;
-  width: 60%;
-  background-color: lawngreen;
-} */
-
 .title{
   font-size: 24px;
   margin-top: 40px;
   margin-bottom: 20px;
 }
 
+
+.top{
+  align-items:initial;
+}
+
 .left-side{
   box-sizing: border-box;
-  width: 250px;
+  width: 25%;
 }
 
 .my-data{
@@ -133,6 +137,7 @@ export default {
 }
 
 .store-boxes{
+  width: 75%;
   display: flex;
   flex-wrap:wrap;
   margin-bottom: auto;
@@ -140,6 +145,7 @@ export default {
 
 .store-box{
   margin: 10px;
+
 } 
 
 @media screen and (max-width : 480px) {
@@ -155,6 +161,7 @@ export default {
   }
 
   .store-boxes{
+    width: 100%;
     margin-top: 20px;
     justify-content: center;
     margin-bottom: 20px;

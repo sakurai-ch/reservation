@@ -148,12 +148,14 @@ export default {
   },
 
   async created(){
-    const storesDataPromise = axios.get("http://localhost:3000/stores_data");
-    const areasDataPromise = axios.get("http://localhost:3000/areas_data");
-    const genresDataPromise = axios.get("http://localhost:3000/genres_data");
-    this.storesData = (await storesDataPromise).data;
-    this.areasData = (await areasDataPromise).data;
-    this.genresData = (await genresDataPromise).data;
+    const storesDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store", {
+      params: {user_id: this.$store.state.user_id}
+    });
+    const areasDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/area");
+    const genresDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/genre");
+    this.storesData = (await storesDataPromise).data.data;
+    this.areasData = (await areasDataPromise).data.data;
+    this.genresData = (await genresDataPromise).data.data;
 
     for(let storeData of this.storesData){
       storeData["select"] = true;

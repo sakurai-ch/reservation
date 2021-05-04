@@ -49,7 +49,7 @@ export default {
         user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
-      const response = await axios.delete("http://localhost:3000/favorite_delete", favorite_data);
+      const response = await axios.delete("https://mysterious-fjord-19119.herokuapp.com/api/v1/favorite", {params: favorite_data});
       console.log(response);
       this.$emit("favoriteDelete", this.storeData.id);
     },
@@ -59,7 +59,7 @@ export default {
         user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
-      const response = await axios.post("http://localhost:3000/favorite_post", favorite_data);
+      const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/favorite", favorite_data);
       console.log(response);
       this.$emit("favoritePost", this.storeData.id);
     }
