@@ -81,6 +81,7 @@ margin: 0;
   cursor: pointer;
   border: none;
   outline: none;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .input-box-input{
@@ -90,6 +91,7 @@ margin: 0;
   cursor: text;
   border: none;
   outline: none;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .input-box-button{
