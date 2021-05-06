@@ -11,11 +11,11 @@
             v-model="saerchData.area_name"
             class="input-box-select"
           >
-            <option value=""></option>
+            <option value="">全て</option>
             <option 
-              v-for="areaData in areasData" 
+              v-for="areaData in createAreasName" 
               :key="areaData.id"
-            >{{cutAreaName(areaData.area_name)}}</option>
+            >{{areaData.area_name}}</option>
           </select>
         </div>
       </div>
@@ -29,9 +29,9 @@
             v-model="saerchData.genre_name" 
             class="input-box-select" 
           >
-            <option></option>
+            <option value=""> 全て</option>
             <option 
-              v-for="genreData in genresData" 
+              v-for="genreData in createGenresName" 
               :key="genreData.id" 
             >{{genreData.genre_name}}</option>
           </select>
@@ -40,7 +40,7 @@
       <div class="flex flex-end">
         <div><p>店名</p></div>
         <div
-          class="input-box input-width184 input-width60p"
+          class="input-box input-width184 input-width60p input-padding"
         >
           <input 
             type="text" 
@@ -94,10 +94,6 @@ export default {
     }
   },
   methods:{
-    cutAreaName(areaName){
-      return areaName.substr(0, areaName.length-1);
-    },
-    
     storeSaerch(){
       for(let storeData of this.storesData){
         let existsAreaId;
@@ -144,6 +140,19 @@ export default {
           storeData.user_id = this.$store.state.user_id;
         }
       }
+    },
+  },
+
+  computed:{
+    createAreasName(){
+      for(let areaData of this.areasData){
+        areaData.area_name = (areaData.area_name).substr(0, areaData.area_name.length-1);
+      }
+      return this.areasData;
+    },
+
+    createGenresName(){
+      return this.genresData;
     },
   },
 

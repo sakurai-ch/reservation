@@ -9,21 +9,21 @@
           <p class="sub-title">■メールアドレス</p>
           <p>{{$store.state.email}}</p><br>
           <div 
-            v-for="reservationData in reservationsData" 
+            v-for="reservationData in createReservationsData" 
             :key="reservationData.id"
           >
             <div class="flex">
               <div>
-                <p class="sub-title">■予約 {{reservationNum(reservationData.id)}}</p>
+                <p class="sub-title">■予約 {{reservationData.num}}</p>
                 <p>予約番号：{{reservationData.id}}</p>
                 <p>店舗名：{{reservationData.store.store_name}}</p>
                 <p>予約日：{{reservationData.date}}</p>
-                <p>予約時間：{{reservationTime(reservationData.time)}}</p>
+                <p>予約時間：{{reservationData.time}}</p>
                 <p>人数：{{reservationData.num_of_users}}名</p><br>
               </div>
               <div class="potition-top">
                 <button 
-                  @click="reservationDalete()" 
+                  @click="reservationDalete(reservationData.id)" 
                   class="input-box input-height32 input-box-button"
                 >取消</button>
               </div>
@@ -65,12 +65,12 @@ export default {
     };
   },
   methods: {
-    async reservationDalete(){
+    async reservationDalete(reservationId){
       const response = await axios.delete("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-        params: {reservation_id: this.reservationData.id}
+        params: {reservation_id: reservationId}
       });
       console.log(response);
-      this.$forceUpdate();
+      this.$router.go({path: this.$router.currentRoute.path, force: true});
     },
 
     favoriteDelete(store_id){
@@ -80,15 +80,18 @@ export default {
         }
       }
     },
+  },
 
-    reservationNum(reservationId){
-      return this.reservationsData.findIndex(({id}) => id === reservationId)+1
-    },
-
-    reservationTime(reservationTime){
-      return reservationTime.substr(0, 5);
+  computed: {
+    createReservationsData(){
+      for(let reservationData of this.reservationsData){
+        reservationData["num"] = this.reservationsData.findIndex(({id}) => id === reservationData.id)+1;
+        reservationData["time"] = reservationData.time.substr(0, 5);
+      }
+      return this.reservationsData;
     }
   },
+
   async created(){
     const storesDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store", {
       params: {user_id : this.$store.state.user_id}

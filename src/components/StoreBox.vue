@@ -9,7 +9,7 @@
     </div>
     <div class="mobile-right">
       <div class="flex">
-        <p>{{cutAreaName(storeData.area.area_name)}}／{{storeData.genre.genre_name}}</p>
+        <p>{{createAreaName}}／{{createGenreName}}</p>
         <StoreFavorite 
           :storeData = "storeData"
           @favoriteDelete="favoriteDelete" 
@@ -19,7 +19,7 @@
       <div class="flex text-low">
         <p class="store_name">{{storeData.store_name}}</p>
         <button 
-          @click="detail"
+          @click="viewDetail"
           class="input-box input-height32 input-box-button"
         >詳細</button>
       </div>
@@ -58,11 +58,7 @@ export default {
     }
   },
   methods: {
-    cutAreaName(areaName){
-      return areaName.substr(0, areaName.length-1);
-    },
-
-    detail() {
+    viewDetail() {
       this.$router.push({ name: "Detail", params: { shop_id: this.storeData.id } });
     },
 
@@ -74,6 +70,16 @@ export default {
       this.$emit("favoritePost", store_id);
     },
   },
+
+  computed: {
+    createAreaName(){
+      return this.storeData.area.area_name.substr(0, this.storeData.area.area_name.length-1);
+    },
+
+    createGenreName(){
+      return this.storeData.genre.genre_name;
+    },
+  }
 }
 </script>
 

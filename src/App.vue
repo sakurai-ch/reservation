@@ -82,6 +82,7 @@ margin: 0;
   border: none;
   outline: none;
   background-color: rgba(255, 255, 255, 0);
+  font-family: initial;
 }
 
 .input-box-input{
@@ -92,6 +93,7 @@ margin: 0;
   border: none;
   outline: none;
   background-color: rgba(255, 255, 255, 0);
+  font-family: initial;
 }
 
 .input-box-button{
@@ -99,6 +101,11 @@ margin: 0;
   font-size:14px;
   cursor: pointer;
   outline: none;
+}
+
+.input-padding{
+  width: 88%;
+  padding-left: 5px;
 }
 
 .input-width390{

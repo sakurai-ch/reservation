@@ -3,7 +3,7 @@
     <div class="top flex">
       <p class="store-name">{{storeData.store_name}}</p>
       <div class="flex">
-        <p>{{cutAreaName()}}／{{genreName()}}</p>
+        <p>{{createAreaName}}／{{createGenreName}}</p>
         <StoreFavorite 
           :storeData = "storeData" 
           @favoriteDelete="favoriteDelete" 
@@ -24,8 +24,8 @@
             <div class="input-box input-width243 input-width60p">
               <input 
                 type="date" 
-                :min="minDate" 
-                :max="maxDate" 
+                :min= createSelectableMinDate 
+                :max= createSelectableMaxDate 
                 v-model="reservationData.date"
                 class="input-box-input"
               >
@@ -38,9 +38,8 @@
                 v-model="reservationData.time"
                 class="input-box-select"
               >
-                <option></option>
                 <option 
-                  v-for="select in selectableTime" 
+                  v-for="select in createSelectableTime" 
                   :key="select.num" 
                 >{{select.time}}</option>
               </select>
@@ -54,7 +53,7 @@
                 :min="1" 
                 :max="maxOfUsers" 
                 v-model="reservationData.num_of_users"
-                class="input-box-input"
+                class="input-box-input input-padding"
               >
             </div>
           </div>
@@ -94,9 +93,6 @@ export default {
   components: {
     StoreFavorite
   },
-  // props: {
-    //   shop_id: Number,
-  // },
   props: ["shop_id"],
   data(){
     return {
@@ -105,15 +101,15 @@ export default {
         store_id: this.shop_id,
         date: "",
         time: "",
-        num_of_users:""
+        num_of_users: "1"
       },
-      storeData:{},
-      minDate:"",
-      maxDate:"",
+      storeData:{
+        area:{area_name:""},
+        genre:{}
+      },
       minTime:10.5,
       maxTime:17,
       timeInterval:0.5,
-      selectableTime:[],
       maxOfUsers:20
     };
   },
@@ -137,55 +133,66 @@ export default {
     },
 
     dateFormat(argDate){
-      const year = argDate.getFullYear();
-      const month = ("0"+(argDate.getMonth() + 1)).slice(-2);
-      const date = ("0"+argDate.getDate()).slice(-2);
-      return year + "-" + month + "-" + date;
+      const yearView = argDate.getFullYear();
+      const monthView = ("0"+(argDate.getMonth() + 1)).slice(-2);
+      const dateView = ("0"+argDate.getDate()).slice(-2);
+      return yearView + "-" + monthView + "-" + dateView;
     },
 
-    createSelectableDate(){
+    timeFormat(arghour){
+        const hourView = ("0"+ Math.floor(arghour) ).slice(-2);
+        const minute = (arghour - Math.floor(arghour)) * 60;
+        const minuteView = ("0"+ minute ).slice(-2);
+        return hourView + ":" + minuteView;
+    },
+  },
+  
+  computed: {
+    createSelectableMinDate(){
       const today = new Date();
-      this.minDate = this.dateFormat(today);
-      
-      const nextMonthDate = today;
+      const tomorrow = today;
+      tomorrow.setDate(tomorrow.getDate() +1);
+      return this.dateFormat(tomorrow);
+    },
+
+    createSelectableMaxDate(){
+      const nextMonthDate = new Date();
       nextMonthDate.setMonth(nextMonthDate.getMonth() +1);
-      this.maxDate = this.dateFormat(nextMonthDate);
+      return this.dateFormat(nextMonthDate);
     },
 
     createSelectableTime(){
       let num = 0;
       let hour = this.minTime;
+      let selectableTime = [];
       while(hour <= this.maxTime){
-        const hourView = ("0"+ Math.floor(hour) ).slice(-2);
-        const minute = (hour - Math.floor(hour)) * 60;
-        const minuteView = ("0"+ minute ).slice(-2);
-
-        let array = {};
-        array.num = num;
-        array.time = hourView + ":" + minuteView;
-        this.selectableTime[num] = array;
-
+        selectableTime[num] = {
+          num: num, 
+          time: this.timeFormat(hour)
+        };
         num++;
         hour += this.timeInterval;
       }
+      return selectableTime;
     },
 
-    cutAreaName(){
+    createAreaName(){
       return (this.storeData.area.area_name).substr(0, (this.storeData.area.area_name.length)-1);
     },
 
-    genreName(){
+    createGenreName(){
       return this.storeData.genre.genre_name;
     },
   },
+
   async created(){
     const response = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id,{
       params: {user_id : this.$store.state.user_id}
     });
     this.storeData = response.data.data;
 
-    this.createSelectableDate();
-    this.createSelectableTime();
+    this.reservationData.date = this.createSelectableMinDate;
+    this.reservationData.time = this.timeFormat(this.minTime);
   }
 }
 </script>
@@ -219,6 +226,10 @@ export default {
 .reservation{
   margin-top: 50px;
   text-align: right;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
 }
 
 .right-side{
