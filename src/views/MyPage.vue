@@ -23,8 +23,13 @@
               </div>
               <div class="potition-top">
                 <button 
-                  @click="reservationDalete(reservationData.id)" 
+                  @click="reservationPatch(reservationData.store_id ,reservationData.id)" 
                   class="input-box input-height32 input-box-button"
+                >変更</button>
+                <br>
+                <button 
+                  @click="reservationDalete(reservationData.id)" 
+                  class="input-box input-height32 input-box-button color-red"
                 >取消</button>
               </div>
             </div>
@@ -70,7 +75,12 @@ export default {
         params: {reservation_id: reservationId}
       });
       console.log(response);
-      this.$router.go({path: this.$router.currentRoute.path, force: true});
+      // this.$router.go({path: this.$router.currentRoute.path, force: true});
+      this.$router.push({path: '/done/3'});
+    },
+
+    reservationPatch(storeId, reservationId) {
+      this.$router.push({ name: "Detail", params: { shop_id: storeId , reservationId: reservationId}});
     },
 
     favoriteDelete(store_id){
@@ -96,16 +106,20 @@ export default {
     const storesDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store", {
       params: {user_id : this.$store.state.user_id}
     });
-    const reservationDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
+    const reservationsDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
       params: {user_id : this.$store.state.user_id}
     });
     this.storesData = (await storesDataPromise).data.data;
-    this.reservationsData = (await reservationDataPromise).data.data;
+    this.reservationsData = (await reservationsDataPromise).data.data;
   }
 }
 </script>
 
 <style scoped>
+.my-page{
+  margin-bottom: 40px;
+}
+
 .title{
   font-size: 24px;
   margin-top: 40px;
@@ -137,6 +151,11 @@ export default {
 
 .potition-top{
   margin-bottom: auto;
+}
+
+.color-red{
+  border-color: #ff5544;
+  background-color: #ffaa99;
 }
 
 .store-boxes{

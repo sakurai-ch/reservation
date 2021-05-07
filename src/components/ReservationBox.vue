@@ -1,108 +1,85 @@
 <template>
-  <div class="detail">
-    <div class="top flex">
-      <p class="store-name">{{storeData.store_name}}</p>
-      <div class="flex">
-        <p>{{createAreaName}}／{{createGenreName}}</p>
-        <StoreFavorite 
-          :storeData = "storeData" 
-          @favoriteDelete="favoriteDelete" 
-          @favoritePost="favoritePost" 
-        ></StoreFavorite>
-      </div>
-    </div>
-    <div class="bottom no-flex">
-      <div class="left-side">
-        <p class="description">{{storeData.description}}</p>
-        <div 
-          v-if="$store.state.auth"
-          key="reservationInput"
-          class="reservation"
-        >
-          <div 
-            v-if="reservationData.reservation_id != '' "
-            key="reservationUpdateId" 
-            class="flex flex-end"
+  <div class="left-side">
+    <div 
+      v-if="$store.state.auth"
+      key="reservationInput"
+      class="reservation"
+    >
+      <div 
+        v-if="reservationData.reservation_id != '' "
+        key="reservationUpdate" 
+        class="flex flex-end"
+      >
+        <div><p>予約番号</p></div>
+        <div class="input-box input-width243 input-width60p  input-box-readonly">
+          <input 
+            type="text" 
+            v-model="reservationData.reservation_id"
+            class="input-box-input input-box-readonly input-padding"
+            readonly
           >
-            <div><p>予約番号</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly">
-              <input 
-                type="text" 
-                v-model="reservationData.reservation_id"
-                class="input-box-input input-box-readonly input-padding"
-                readonly
-              >
-            </div>
-          </div>
-          <div class="flex flex-end">
-            <div><p>予約日</p></div>
-            <div class="input-box input-width243 input-width60p">
-              <input 
-                type="date" 
-                :min= createSelectableMinDate 
-                :max= createSelectableMaxDate 
-                v-model="reservationData.date"
-                class="input-box-input"
-              >
-            </div>
-          </div>
-          <div class="flex flex-end">
-            <div><p>予約時間</p></div>
-            <div class="input-box input-width243 input-width60p">
-              <select 
-                v-model="reservationData.time"
-                class="input-box-select"
-              >
-                <option 
-                  v-for="select in createSelectableTime" 
-                  :key="select.num" 
-                >{{select.time}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex flex-end">
-            <div><p>人数</p></div>
-            <div class="input-box input-width243 input-width60p">
-              <input 
-                type="number" 
-                :min="1" 
-                :max="maxOfUsers" 
-                v-model="reservationData.num_of_users"
-                class="input-box-input input-padding"
-              >
-            </div>
-          </div>
-          <button 
-            v-if="reservationData.reservation_id != '' "
-            key="reservationUpdateButton" 
-            @click="reservationPatch()"
-            class="input-box input-width243 input-width60p input-box-button"
-          >予約変更</button>
-          <button 
-            v-else 
-            key="reservationUpdateButton" 
-            @click="reservationPost()"
-            class="input-box input-width243 input-width60p input-box-button"
-          >予約</button>
-        </div>
-        <div 
-          v-else
-          key="reservationInput"
-          class="reservation"
-        >
-          <button 
-            @click="$router.push({path: '/login'})"
-            class="input-box input-width243 input-width60p input-box-button"
-          >予約（ログイン）</button>
         </div>
       </div>
-      <div class="right-side">
-        <img 
-          :src="storeData.image_url" 
-          alt="" 
-          class="img"
-        >
+      <div class="flex flex-end">
+        <div><p>予約日</p></div>
+        <div class="input-box input-width243 input-width60p">
+          <input 
+            type="date" 
+            :min= createSelectableMinDate 
+            :max= createSelectableMaxDate 
+            v-model="reservationData.date"
+            class="input-box-input"
+          >
+        </div>
       </div>
+      <div class="flex flex-end">
+        <div><p>予約時間</p></div>
+        <div class="input-box input-width243 input-width60p">
+          <select 
+            v-model="reservationData.time"
+            class="input-box-select"
+          >
+            <option 
+              v-for="select in createSelectableTime" 
+              :key="select.num" 
+            >{{select.time}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-end">
+        <div><p>人数</p></div>
+        <div class="input-box input-width243 input-width60p">
+          <input 
+            type="number" 
+            :min="1" 
+            :max="maxOfUsers" 
+            v-model="reservationData.num_of_users"
+            class="input-box-input input-padding"
+          >
+        </div>
+      </div>
+      <button 
+        v-if="reservationData.reservation_id != '' "
+        key="reservationUpdate" 
+        @click="reservationPatch()"
+        class="input-box input-width243 input-width60p input-box-button"
+      >予約変更</button>
+      <button 
+        v-else 
+        key="reservationUpdate" 
+        @click="reservationPost()"
+        class="input-box input-width243 input-width60p input-box-button"
+      >予約</button>
+    </div>
+    <div 
+      v-else
+      key="reservationInput"
+      class="reservation"
+    >
+      <button 
+        @click="$router.push({path: '/login'})"
+        class="input-box input-width243 input-width60p input-box-button"
+      >予約（ログイン）</button>
     </div>
   </div>
 </template>
@@ -116,7 +93,7 @@ export default {
   components: {
     StoreFavorite
   },
-  props: ["shop_id", "reservationId"],
+  props: ["shop_id", "reservation_data"],
   data(){
     return {
       reservationData:{
@@ -141,13 +118,13 @@ export default {
     async reservationPost(){
       const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
       console.log(response);
-      router.push({path: '/done/1'});
+      router.push({path: '/done'});
     },
 
     async reservationPatch(){
       const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
       console.log(response);
-      router.push({path: '/done/2'});
+      router.push({path: '/done'});
     },
 
     favoriteDelete(store_id){
@@ -221,18 +198,14 @@ export default {
     });
     this.storeData = response.data.data;
 
-    if(this.reservationId == "none"){
+    if(this.reservation_data == null){
       this.reservationData.date = this.createSelectableMinDate;
       this.reservationData.time = this.timeFormat(this.minTime);
     }else{
-      const reservationsData = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-        params: {user_id : this.$store.state.user_id}
-      });
-      const reservationDataArray = (reservationsData.data.data.filter(data => data.id == this.reservationId))[0];
-      this.reservationData.reservation_id = reservationDataArray.id;
-      this.reservationData.date = reservationDataArray.date;
-      this.reservationData.time = reservationDataArray.time.substr(0,5);
-      this.reservationData.num_of_users = reservationDataArray.num_of_users;
+      this.reservationData.reservation_id = this.reservation_data.reservation_id;
+      this.reservationData.date = this.reservation_data.date;
+      this.reservationData.time = this.reservation_data.time;
+      this.reservationData.num_of_users = this.reservation_data.num_of_users;
     }
   }
 }

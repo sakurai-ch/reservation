@@ -178,6 +178,11 @@ export default {
   margin: 20px auto;
 }
 
+.store-search{
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
 .store-boxes{
   display: flex;
   flex-wrap:wrap;

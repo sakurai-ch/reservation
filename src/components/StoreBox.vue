@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     viewDetail() {
-      this.$router.push({ name: "Detail", params: { shop_id: this.storeData.id } });
+      this.$router.push({ name: "Detail", params: { shop_id: this.storeData.id , reservationId: "none"}});
     },
 
     favoriteDelete(store_id){

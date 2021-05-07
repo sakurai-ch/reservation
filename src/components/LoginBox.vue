@@ -86,7 +86,9 @@ export default {
         email: this.email,
         password: this.password
       });
-      router.go(-1);
+      // router.go(-1);
+      router.back();
+      // this.$router.push({path: '/'});
     },
 
     async register() {

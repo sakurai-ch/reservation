@@ -20,7 +20,7 @@
 .logo{
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: #ffffff;
   margin-left: 20px;
   line-height: 59px;
 }

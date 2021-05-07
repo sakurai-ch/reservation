@@ -36,16 +36,28 @@ const routes = [
     name: 'MyPage',
     component: MyPage
   },
+  // {
+  //   path: "/detail/:shop_id",
+  //   name: "Detail",
+  //   component: Detail,
+  //   props: true,
+  // },
   {
-    path: "/detail/:shop_id",
+    path: "/detail/:shop_id/:reservationId",
     name: "Detail",
     component: Detail,
     props: true,
   },
+  // {
+  //   path: '/done',
+  //   name: 'Done',
+  //   component: Done
+  // },
   {
-    path: '/done',
+    path: '/done/:commentNom',
     name: 'Done',
-    component: Done
+    component: Done,
+    props: true,
   },
 
 ]

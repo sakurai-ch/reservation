@@ -7,10 +7,22 @@
       <p class="title" >会員登録を完了しました</p>
     </div>
     <div 
-      v-else-if="type=='done'" 
+      v-else-if="type=='done1'" 
       key="title-type"
     >
       <p class="title">予約を完了しました</p>
+    </div>
+    <div 
+      v-else-if="type=='done2'" 
+      key="title-type"
+    >
+      <p class="title">予約を変更しました</p>
+    </div>
+    <div 
+      v-else-if="type=='done3'" 
+      key="title-type"
+    >
+      <p class="title">予約を取消しました</p>
     </div>
 
     <button 
@@ -20,7 +32,7 @@
       class="input-box input-width122 input-box-button"
     >店舗一覧へ</button>
     <button 
-      v-else-if="type=='done'" 
+      v-else-if="type=='done1' || type=='done2' || type=='done3'" 
       key="button-type" 
       @click="$router.push({path: '/mypage'})" 
       class="input-box input-width122 input-box-button"
