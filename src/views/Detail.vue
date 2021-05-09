@@ -14,18 +14,75 @@
     <div class="bottom no-flex">
       <div class="left-side">
         <p class="description">{{storeData.description}}</p>
+
         <div 
-          v-if="$store.state.auth"
+          v-if="!($store.state.auth)" 
           key="reservationInput"
           class="reservation"
         >
-          <div 
-            v-if="reservationData.reservation_id != '' "
-            key="reservationUpdateId" 
-            class="flex flex-end"
-          >
+          <button 
+            @click="$router.push({path: '/login'})"
+            class="input-box input-width243 input-width60p input-box-button"
+          >予約（ログイン）</button>
+        </div>
+
+        <div 
+          v-else-if="reservationData.reservation_id == '' "
+          key="reservationInput"
+          class="reservation"
+        >
+          <div class="flex flex-end">
+            <div><p>予約日</p></div>
+            <div class="input-box input-width243 input-width60p">
+              <input 
+                type="date" 
+                :min= createSelectableMinDate 
+                :max= createSelectableMaxDate 
+                v-model="reservationData.date"
+                class="input-box-input"
+              >
+            </div>
+          </div>
+          <div class="flex flex-end">
+            <div><p>予約時間</p></div>
+            <div class="input-box input-width243 input-width60p">
+              <select 
+                v-model="reservationData.time"
+                class="input-box-select"
+              >
+                <option 
+                  v-for="select in createSelectableTime" 
+                  :key="select.num" 
+                >{{select.time}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex flex-end">
+            <div><p>人数</p></div>
+            <div class="input-box input-width243 input-width60p">
+              <input 
+                type="number" 
+                :min="1" 
+                :max="maxOfUsers" 
+                v-model="reservationData.num_of_users"
+                class="input-box-input input-padding"
+              >
+            </div>
+          </div>
+          <button 
+            @click="reservationPost()"
+            class="input-box input-width243 input-width60p input-box-button"
+          >予約</button>
+        </div>
+
+        <div 
+          v-else-if="reservationData.date >= createRatingStartTime"
+          key="reservationInput"
+          class="reservation"
+        >
+          <div class="flex flex-end">
             <div><p>予約番号</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly">
+            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
               <input 
                 type="text" 
                 v-model="reservationData.reservation_id"
@@ -73,29 +130,101 @@
             </div>
           </div>
           <button 
-            v-if="reservationData.reservation_id != '' "
-            key="reservationUpdateButton" 
             @click="reservationPatch()"
             class="input-box input-width243 input-width60p input-box-button"
           >予約変更</button>
-          <button 
-            v-else 
-            key="reservationUpdateButton" 
-            @click="reservationPost()"
-            class="input-box input-width243 input-width60p input-box-button"
-          >予約</button>
         </div>
+
         <div 
-          v-else
+          v-else-if="reservationData.date < createRatingStartTime"
           key="reservationInput"
           class="reservation"
         >
+          <div class="flex flex-end">
+            <div><p>予約番号</p></div>
+            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
+              <input 
+                type="text" 
+                v-model="reservationData.reservation_id"
+                class="input-box-input input-box-readonly input-padding"
+                readonly
+              >
+            </div>
+          </div>
+          <div class="flex flex-end">
+            <div><p>予約日</p></div>
+            <div class="input-box input-width243 input-width60p input-box-readonly input-height32">
+              <input 
+                type="date" 
+                v-model="reservationData.date"
+                class="input-box-input input-box-readonly"
+                readonly
+              >
+            </div>
+          </div>
+          <div class="flex flex-end">
+            <div><p>予約時間</p></div>
+            <div class="input-box input-width243 input-width60p input-box-readonly input-height32">
+              <input 
+                type="time" 
+                v-model="reservationData.time"
+                class="input-box-select input-box-readonly"
+                readonly
+              >
+            </div>
+          </div>
+          <div class="flex flex-end">
+            <div><p>人数</p></div>
+            <div class="input-box input-width243 input-width60p input-box-readonly input-height32">
+              <input 
+                type="text" 
+                v-model="reservationData.num_of_users"
+                class="input-box-input input-padding input-box-readonly"
+                readonly
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-end">
+            <div><p>評価</p></div>
+            <div class="input-box input-width243 input-width60p flex input-star">
+              <div 
+                v-for="n of 5" 
+                :key="n"
+              >
+                <button 
+                  v-if="reservationData.rating >= n" 
+                  key="rating"
+                  class="rating" 
+                  @click="reservationRating(reservationData, n-1)" 
+                >★</button>
+                <button 
+                  v-else 
+                  key="rating"
+                  class="rating" 
+                  @click="reservationRating(reservationData, n)" 
+                >☆</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-end">
+            <div><p>コメント</p></div>
+            <div class="input-box input-width243 input-width60p input-height78">
+              <textarea 
+                v-model="reservationData.comment"
+                class="input-box-textarea input-padding"
+              ></textarea>
+            </div>
+          </div>
+
           <button 
-            @click="$router.push({path: '/login'})"
+            @click="reservationRatingPost()" 
             class="input-box input-width243 input-width60p input-box-button"
-          >予約（ログイン）</button>
+          >評価送信</button>
         </div>
       </div>
+      
       <div class="right-side">
         <img 
           :src="storeData.image_url" 
@@ -125,7 +254,9 @@ export default {
         store_id: this.shop_id,
         date: "",
         time: "",
-        num_of_users: "1"
+        num_of_users: "1",
+        rating: "3",
+        comment: "",
       },
       storeData:{
         area:{area_name:""},
@@ -145,9 +276,23 @@ export default {
     },
 
     async reservationPatch(){
-      const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
+      const reservationPatchData = {
+        reservation_id: this.reservationData.reservation_id,
+        date: this.reservationData.date,
+        time: this.reservationData.time,
+        num_of_users: this.reservationData.num_of_users,
+        rating: null,
+        comment: null,
+      };
+      const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", reservationPatchData);
       console.log(response);
       router.push({path: '/done/2'});
+    },
+
+    async reservationRatingPost(){
+      const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
+      console.log(response);
+      router.push({path: '/done/4'});
     },
 
     favoriteDelete(store_id){
@@ -160,6 +305,11 @@ export default {
       if(this.storeData.id == store_id){
         this.storeData.user_id = this.$store.state.user_id;
       }
+    },
+
+    reservationRating(reservationData, num){
+      reservationData.rating = num;
+      this.$forceUpdate();
     },
 
     dateFormat(argDate){
@@ -204,6 +354,21 @@ export default {
         hour += this.timeInterval;
       }
       return selectableTime;
+    },
+
+    createRatingStartTime(){
+      const today = new Date();
+      const startDateTime = today;
+      startDateTime.setMinutes(startDateTime.getMinutes() +30);
+      startDateTime.setDate(startDateTime.getDate() +14); //
+
+      const startYear = startDateTime.getFullYear();
+      const startMonth = ("0"+ (startDateTime.getMonth() + 1) ).slice(-2);
+      const startDate = ("0"+ startDateTime.getDate() ).slice(-2);
+      const startHours = ("0"+ startDateTime.getHours() ).slice(-2);
+      const startMinutes = ("0"+ startDateTime.getMinutes() ).slice(-2);
+
+      return startYear + "-" + startMonth + "-" + startDate + "-" + startHours + ":" + startMinutes;
     },
 
     createAreaName(){
@@ -273,10 +438,24 @@ input[type=number]::-webkit-inner-spin-button {
     opacity: 1
 }
 
-
 .input-box-readonly{
   border-color: #c4c4c4;
   cursor: not-allowed;
+}
+
+.input-star{
+  border: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.rating{
+  font-size: 26px;
+  padding: 0;
+  border:none;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0);
+  color: #ffc700;
 }
 
 .right-side{

@@ -11,10 +11,10 @@ export default {
   components: {
     ThanksBox
   },
-  props: ["commentNom"],
+  props: ["commentNum"],
   data() {
     return {
-      type: "done" + this.commentNom,
+      type: "done" + this.commentNum,
     };
   },
 }

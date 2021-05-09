@@ -24,6 +24,12 @@
     >
       <p class="title">予約を取消しました</p>
     </div>
+    <div 
+      v-else-if="type=='done4'" 
+      key="title-type"
+    >
+      <p class="title">評価を送信しました</p>
+    </div>
 
     <button 
       v-if="type=='thanks'" 
@@ -32,7 +38,7 @@
       class="input-box input-width122 input-box-button"
     >店舗一覧へ</button>
     <button 
-      v-else-if="type=='done1' || type=='done2' || type=='done3'" 
+      v-else 
       key="button-type" 
       @click="$router.push({path: '/mypage'})" 
       class="input-box input-width122 input-box-button"

@@ -8,6 +8,7 @@
           <p>{{$store.state.user_name}}</p><br>
           <p class="sub-title">■メールアドレス</p>
           <p>{{$store.state.email}}</p><br>
+
           <div 
             v-for="reservationData in createReservationsData" 
             :key="reservationData.id"
@@ -21,16 +22,31 @@
                 <p>予約時間：{{reservationData.time}}</p>
                 <p>人数：{{reservationData.num_of_users}}名</p><br>
               </div>
-              <div class="potition-top">
+
+              <div 
+                v-if="reservationData.date >= createRatingStartTime" 
+                key="reservationDateTime"
+                class="potition-top">
                 <button 
                   @click="reservationPatch(reservationData.store_id ,reservationData.id)" 
-                  class="input-box input-height32 input-box-button"
-                >変更</button>
+                  class="input-box input-height43 input-box-button"
+                >予約<br>変更</button>
                 <br>
                 <button 
                   @click="reservationDalete(reservationData.id)" 
-                  class="input-box input-height32 input-box-button color-red"
-                >取消</button>
+                  class="input-box input-height43 input-box-button color-red"
+                >予約<br>取消</button>
+              </div>
+                                       
+              <div 
+                v-else-if="reservationData.date < createRatingStartTime" 
+                key="reservationDateTime"
+                class="potition-top"
+              >
+                <button 
+                  @click="reservationPatch(reservationData.store_id ,reservationData.id)"
+                  class="input-box input-height32 input-box-button"
+                >評価</button><br>
               </div>
             </div>
           </div>
@@ -75,7 +91,6 @@ export default {
         params: {reservation_id: reservationId}
       });
       console.log(response);
-      // this.$router.go({path: this.$router.currentRoute.path, force: true});
       this.$router.push({path: '/done/3'});
     },
 
@@ -90,6 +105,11 @@ export default {
         }
       }
     },
+
+    reservationRating(reservationData, num){
+      reservationData.rating = num;
+      this.$forceUpdate();
+    },
   },
 
   computed: {
@@ -97,9 +117,25 @@ export default {
       for(let reservationData of this.reservationsData){
         reservationData["num"] = this.reservationsData.findIndex(({id}) => id === reservationData.id)+1;
         reservationData["time"] = reservationData.time.substr(0, 5);
+        reservationData["rating"] = 3;
       }
       return this.reservationsData;
-    }
+    },
+
+    createRatingStartTime(){
+      const today = new Date();
+      const startDateTime = today;
+      startDateTime.setMinutes(startDateTime.getMinutes() +30);
+      startDateTime.setDate(startDateTime.getDate() +14); //
+
+      const startYear = startDateTime.getFullYear();
+      const startMonth = ("0"+ (startDateTime.getMonth() + 1) ).slice(-2);
+      const startDate = ("0"+ startDateTime.getDate() ).slice(-2);
+      const startHours = ("0"+ startDateTime.getHours() ).slice(-2);
+      const startMinutes = ("0"+ startDateTime.getMinutes() ).slice(-2);
+
+      return startYear + "-" + startMonth + "-" + startDate + "-" + startHours + ":" + startMinutes;
+    },
   },
 
   async created(){
@@ -126,7 +162,6 @@ export default {
   margin-bottom: 20px;
 }
 
-
 .top{
   align-items:initial;
 }
@@ -149,13 +184,45 @@ export default {
   font-weight: bold;
 }
 
+.rating-box{
+  position: relative;
+}
+
 .potition-top{
+  margin-top: 18px;
   margin-bottom: auto;
+}
+
+.comment{
+  font-size: 11px;
+  font-weight: bold;
+  color: #ffc700;
+}
+
+.rating{
+  font-size: 26px;
+  padding: 0;
+  border:none;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0);
+  color: #ffc700;
 }
 
 .color-red{
   border-color: #ff5544;
   background-color: #ffaa99;
+}
+
+.thanks{
+  width: 210px;
+  height: 50px;
+  top: 20px;
+  position: absolute;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content:space-around;
+  color: #ffc700;
 }
 
 .store-boxes{
@@ -167,7 +234,6 @@ export default {
 
 .store-box{
   margin: 10px;
-
 } 
 
 @media screen and (max-width : 480px) {
@@ -180,6 +246,10 @@ export default {
   .left-side{
     width: 93%;
     margin: 0 auto;
+  }
+  
+  .thanks{
+    width: 80vw;
   }
 
   .store-boxes{

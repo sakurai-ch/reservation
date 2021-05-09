@@ -54,7 +54,7 @@ const routes = [
   //   component: Done
   // },
   {
-    path: '/done/:commentNom',
+    path: '/done/:commentNum',
     name: 'Done',
     component: Done,
     props: true,

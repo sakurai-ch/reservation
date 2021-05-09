@@ -96,6 +96,19 @@ margin: 0;
   font-family: initial;
 }
 
+.input-box-textarea{
+  resize: none;
+  width: 90%;
+  height: 90%;
+  font-size:14px;
+  cursor: text;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0);
+  font-family: initial;
+  margin-top: 2px;
+}
+
 .input-box-button{
   background-color: #ffe454;
   font-size:14px;
@@ -127,6 +140,17 @@ margin: 0;
 .input-height32{
   height: 32px;
   border-radius: 5px;
+}
+
+.input-height43{
+  line-height: 18px;
+  height: 43px;
+  border-radius: 5px;
+}
+
+.input-height78{
+  line-height: 16px;
+  height: 78px;
 }
 
 p{
