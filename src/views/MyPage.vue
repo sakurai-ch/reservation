@@ -126,7 +126,6 @@ export default {
       const today = new Date();
       const startDateTime = today;
       startDateTime.setMinutes(startDateTime.getMinutes() +30);
-      startDateTime.setDate(startDateTime.getDate() +14); //
 
       const startYear = startDateTime.getFullYear();
       const startMonth = ("0"+ (startDateTime.getMonth() + 1) ).slice(-2);
