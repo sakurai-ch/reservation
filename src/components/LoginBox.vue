@@ -13,6 +13,7 @@
         <p class="title">ログイン</p>
       </div>
 
+      <ValidationObserver ref="obs" v-slot="ObserverProps">
       <div class="input">
         <div 
           class="flex flex-end" 
@@ -21,31 +22,43 @@
         >
           <div><p>名前</p></div>
           <div class="input-box input-width390 input-width60p">
-            <input 
-              type="text" 
-              v-model="user_name"
-              class="input-box-input"
-            >
+            <ValidationProvider rules="required" v-slot="ProviderProps" class="validation">
+              <input 
+                type="text" 
+                v-model="user_name"
+                class="input-box-input"
+                name="名前"
+              >
+            <span class="validation-error">{{ ProviderProps.errors[0] }}</span>
+            </ValidationProvider>
           </div>
         </div>
         <div class="flex flex-end">
           <div><p>メールアドレス</p></div>
           <div class="input-box input-width390 input-width60p">
-            <input 
-              type="text" 
-              v-model="email"
-              class="input-box-input"
-            >
+            <ValidationProvider rules="required|email" v-slot="ProviderProps" class="validation">
+              <input 
+                type="text" 
+                v-model="email"
+                class="input-box-input"
+                name="メールアドレス"
+              >
+              <span class="validation-error">{{ ProviderProps.errors[0] }}</span>
+            </ValidationProvider>
           </div>
         </div>
         <div class="flex flex-end">
           <div><p>パスワード</p></div>
           <div class="input-box input-width390 input-width60p">
-            <input 
-              type="text" 
-              v-model="password"
-              class="input-box-input"
-            >
+            <ValidationProvider rules="required|alpha_num|min:6" v-slot="ProviderProps" class="validation">
+              <input 
+                type="text" 
+                v-model="password"
+                class="input-box-input"
+                name="パスワード"
+              >
+              <span class="validation-error">{{ ProviderProps.errors[0] }}</span>
+            </ValidationProvider>
           </div>
         </div>
       </div>
@@ -54,14 +67,19 @@
         v-if="type=='register'" 
         key="button-type" 
         @click="register"
-        class="input-box input-width122 input-box-button"
+        class="input-box input-width122 input-box-button" 
+        :disabled="ObserverProps.invalid || !ObserverProps.validated" 
       >登録</button>
       <button 
         v-else-if="type=='login'" 
         key="button-type" 
         @click="login"
-        class="input-box input-width122 input-box-button"
+        class="input-box input-width122 input-box-button" 
+        :disabled="ObserverProps.invalid || !ObserverProps.validated" 
       >ログイン</button>
+      </ValidationObserver>
+      <br>
+      <p :class="server_error">入力が正しくありません</p>
     </div>
 </template>
 
@@ -69,15 +87,39 @@
 import axios from "axios";
 import router from "../router/index";
 
+import { extend, ValidationProvider, ValidationObserver } from 'vee-validate';
+import { required, email, alpha_num, min } from 'vee-validate/dist/rules';
+extend("required", {
+  ...required,
+  message: "必須項目です"
+});
+extend('email', {
+  ...email,
+  message: "E-mailの形式で記載してください"
+});
+extend('alpha_num', {
+  ...alpha_num,
+  message: "英数字のみ使用できます"
+});
+extend('min', {
+  ...min,
+  message: "{length}文字以上にしてください"
+});
+
 export default {
   props:{
     type: String
+  },
+  components: {
+    ValidationProvider,
+    ValidationObserver
   },
   data() {
     return {
       user_name: "",
       email: "",
-      password: ""
+      password: "",
+      server_error: "no-server-error",
     };
   },
   methods: {
@@ -86,23 +128,26 @@ export default {
         email: this.email,
         password: this.password
       });
-      // router.go(-1);
       router.back();
-      // this.$router.push({path: '/'});
     },
 
     async register() {
-      const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
-        user_name: this.user_name,
-        email: this.email,
-        password: this.password
-      });
-      console.log(response);
-      this.$store.dispatch("login", {
-        email: this.email,
-        password: this.password
-      });
-      router.replace("/thanks");
+      try{
+        const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
+          user_name: this.user_name,
+          email: this.email,
+          password: this.password
+        });
+        console.log(response);
+        this.$store.dispatch("login", {
+          email: this.email,
+          password: this.password
+        });
+        router.replace("/thanks");
+      }catch(error){
+        console.log(error.response);
+        this.server_error = "server_error";
+      }
     }
   }
 };
@@ -127,6 +172,32 @@ export default {
 
 .input{
   padding-right: 195px;
+}
+
+.validation{
+  position: relative;
+}
+
+.validation-error{
+  width: 100%;
+  position: absolute;
+  text-align: right;
+  left: 0;
+  bottom: -11px;
+  color: #ff0000;
+  font-size: 11px;
+  line-height: 11px;
+}
+
+.no-server-error{
+  display: none;
+
+}
+
+.server_error{
+  display: initial;
+  color: #ff0000;
+  font-size: 11px;
 }
 
 @media screen and (max-width : 480px){
