@@ -36,6 +36,9 @@ export default new Vuex.Store({
           password: password,
         });
       console.log(responseLogin);
+      
+      const token = responseLogin.data.access_token;
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
       commit("auth", responseLogin.data.auth);
       commit("user_id", responseLogin.data.id);
 
