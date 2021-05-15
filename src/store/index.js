@@ -12,6 +12,7 @@ export default new Vuex.Store({
     user_id: "",
     user_name: "",
     email: "",
+    // token: "",
   },
   mutations: {
     auth(state, payload) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     email(state, payload) {
       state.email = payload;
     },
+    // token(state, payload) {
+    //   state.token = payload;
+    // },
   },
   actions: {
     async login({ commit }, {email, password}) {
@@ -37,6 +41,7 @@ export default new Vuex.Store({
         });
       console.log(responseLogin);
       
+      // commit("token", responseLogin.data.access_token); 
       const token = responseLogin.data.access_token;
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
       commit("auth", responseLogin.data.auth);
