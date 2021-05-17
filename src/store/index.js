@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user_id: "",
     user_name: "",
     email: "",
-    // token: "",
+    token: "",
   },
   mutations: {
     auth(state, payload) {
@@ -27,43 +27,39 @@ export default new Vuex.Store({
     email(state, payload) {
       state.email = payload;
     },
-    // token(state, payload) {
-    //   state.token = payload;
-    // },
+    token(state, payload) {
+      state.token = payload;
+    },
   },
   actions: {
     async login({ commit }, {email, password}) {
       const responseLogin = await axios.post(
-        "https://mysterious-fjord-19119.herokuapp.com/api/v1/login",
-        {
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/login", {
           email: email,
           password: password,
-        });
+      });
       console.log(responseLogin);
       
-      // commit("token", responseLogin.data.access_token); 
-      const token = responseLogin.data.access_token;
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      commit("token", responseLogin.data.access_token);
       commit("auth", responseLogin.data.auth);
-      commit("user_id", responseLogin.data.id);
-
-      const responseUser = await axios.get(
-        "https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
-          params: { user_id : this.state.user_id }
-      });
-      commit("user_name", responseUser.data.data.user_name);
-      commit("email", responseUser.data.data.email);
+      commit("user_id", responseLogin.data.user_data.id);
+      commit("user_name", responseLogin.data.user_data.user_name);
+      commit("email", responseLogin.data.user_data.email);
     },
 
     async logout({ commit }) {
-      const responseLogout = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/logout", {
-        auth: this.state.auth
-      });
+      const responseLogout = await axios.post(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/logout",
+        // { auth: this.state.auth },
+        { data: ""},
+        { headers: { Authorization: 'Bearer ' + this.state.token } }
+      );
       console.log(responseLogout);
       commit("auth", responseLogout.data.auth);
       commit("user_id", "");
       commit("user_name", "");
       commit("email", "");
+      commit("token", "");
     },
   },
   modules: {

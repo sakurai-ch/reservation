@@ -7,6 +7,7 @@ import Login from '../views/Login.vue'
 import MyPage from '../views/MyPage.vue'
 import Detail from '../views/Detail.vue'
 import Done from '../views/Done.vue'
+import ManagementStore from '../views/ManagementStore.vue'
 
 Vue.use(VueRouter)
 
@@ -36,27 +37,22 @@ const routes = [
     name: 'MyPage',
     component: MyPage
   },
-  // {
-  //   path: "/detail/:shop_id",
-  //   name: "Detail",
-  //   component: Detail,
-  //   props: true,
-  // },
   {
     path: "/detail/:shop_id/:reservationId",
     name: "Detail",
     component: Detail,
     props: true,
   },
-  // {
-  //   path: '/done',
-  //   name: 'Done',
-  //   component: Done
-  // },
   {
     path: '/done/:commentNum',
     name: 'Done',
     component: Done,
+    props: true,
+  },
+  {
+    path: "/managementstore/:shop_id",
+    name: "ManagementStore",
+    component: ManagementStore,
     props: true,
   },
 

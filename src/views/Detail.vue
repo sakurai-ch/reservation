@@ -270,7 +270,11 @@ export default {
   },
   methods: {
     async reservationPost(){
-      const response = await axios.post("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
+      const response = await axios.post(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
+        this.reservationData,
+        { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
+      );
       console.log(response);
       router.push({path: '/done/1'});
     },
@@ -284,13 +288,21 @@ export default {
         rating: null,
         comment: null,
       };
-      const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", reservationPatchData);
+      const response = await axios.patch(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
+        reservationPatchData, 
+        { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
+      );
       console.log(response);
       router.push({path: '/done/2'});
     },
 
     async reservationRatingPost(){
-      const response = await axios.patch("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", this.reservationData);
+      const response = await axios.patch(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
+        this.reservationData, 
+        { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
+      );
       console.log(response);
       router.push({path: '/done/4'});
     },
@@ -380,8 +392,9 @@ export default {
   },
 
   async created(){
-    const response = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id,{
-      params: {user_id : this.$store.state.user_id}
+    const response = await axios.get(
+      "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, {
+        params: {user_id : this.$store.state.user_id}
     });
     this.storeData = response.data.data;
 
@@ -389,8 +402,10 @@ export default {
       this.reservationData.date = this.createSelectableMinDate;
       this.reservationData.time = this.timeFormat(this.minTime);
     }else{
-      const reservationsData = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-        params: {user_id : this.$store.state.user_id}
+      const reservationsData = await axios.get(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
+          params: {user_id : this.$store.state.user_id},
+          headers: { Authorization: 'Bearer ' + this.$store.state.token } 
       });
       const reservationDataArray = (reservationsData.data.data.filter(data => data.id == this.reservationId))[0];
       this.reservationData.reservation_id = reservationDataArray.id;
