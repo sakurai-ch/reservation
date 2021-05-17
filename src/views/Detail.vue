@@ -250,7 +250,7 @@ export default {
     return {
       reservationData:{
         reservation_id: "",
-        user_id: this.$store.state.user_id,
+        // user_id: this.$store.state.user_id,
         store_id: this.shop_id,
         date: "",
         time: "",

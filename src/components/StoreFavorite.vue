@@ -46,7 +46,7 @@ export default {
   methods: {
     async favoriteDelete(){
       const favorite_data = {
-        user_id: this.$store.state.user_id,
+        // user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
       const response = await axios.delete(
@@ -60,7 +60,7 @@ export default {
 
     async favoritePost(){
       const favorite_data = {
-        user_id: this.$store.state.user_id,
+        // user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
       const response = await axios.post(

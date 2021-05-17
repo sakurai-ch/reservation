@@ -32,11 +32,11 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async login({ commit }, {email, password}) {
+    async login({ commit }, { email, password }) {
       const responseLogin = await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/login", {
-          email: email,
-          password: password,
+        email: email,
+        password: password,
       });
       console.log(responseLogin);
       
@@ -45,7 +45,7 @@ export default new Vuex.Store({
       commit("user_id", responseLogin.data.user_data.id);
       commit("user_name", responseLogin.data.user_data.user_name);
       commit("email", responseLogin.data.user_data.email);
-    },
+    },     
 
     async logout({ commit }) {
       const responseLogout = await axios.post(

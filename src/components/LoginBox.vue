@@ -123,12 +123,16 @@ export default {
     };
   },
   methods: {
-    login() {
-      this.$store.dispatch("login", {
-        email: this.email,
-        password: this.password
-      });
-      router.back();
+    async login() {
+      try{
+        await this.$store.dispatch("login", {
+          email: this.email,
+          password: this.password
+        });
+        router.back();
+      }catch{
+        this.server_error = "server_error";
+      }
     },
 
     async register() {
