@@ -1,6 +1,6 @@
 <template>
-  <div class="my-page">
-    <div><p class="title">マイページ</p></div>
+  <div class="management-store">
+    <div><p class="title">店舗管理ページ</p></div>
     <div class="flex no-flex top">
       <div class="left-side">
         <div class="my-data">
@@ -12,55 +12,35 @@
           <!-- <div 
             v-for="reservationData in createReservationsData" 
             :key="reservationData.id"
-          >
+          > -->
             <div class="flex">
               <div>
-                <p class="sub-title">■予約 {{reservationData.num}}</p>
-                <p>予約番号：{{reservationData.id}}</p>
-                <p>店舗名：{{reservationData.store.store_name}}</p>
-                <p>予約日：{{reservationData.date}}</p>
-                <p>予約時間：{{reservationData.time}}</p>
-                <p>人数：{{reservationData.num_of_users}}名</p><br>
+                <p class="sub-title">■管理店舗 1</p>
+                <p>店舗番号：1</p>
+                <p>店舗名：aaa</p>
+                <p>エリア：bbb</p>
+                <p>ジャンル：ccc</p>
               </div>
 
               <div 
-                v-if="reservationData.date >= createRatingStartTime" 
-                key="reservationDateTime"
                 class="potition-top">
                 <button 
-                  @click="reservationPatch(reservationData.store_id ,reservationData.id)" 
+                  @click="$router.push({path: '/managementstore/1'})" 
                   class="input-box input-height43 input-box-button"
-                >予約<br>変更</button>
-                <br>
-                <button 
-                  @click="reservationDalete(reservationData.id)" 
-                  class="input-box input-height43 input-box-button color-red"
-                >予約<br>取消</button>
-              </div>
-                                       
-              <div 
-                v-else-if="reservationData.date < createRatingStartTime" 
-                key="reservationDateTime"
-                class="potition-top"
-              >
-                <button 
-                  @click="reservationPatch(reservationData.store_id ,reservationData.id)"
-                  class="input-box input-height32 input-box-button"
-                >評価</button><br>
+                >内容<br>変更</button>
               </div>
             </div>
-          </div> -->
+          <!-- </div> -->
         </div>
       </div>
       
-      <!-- <div class="store-boxes"> -->
       <div>
           <div class="flex flex-end">
             <div><p>店舗ID</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
+            <div class="input-box input-width600 input-width60p  input-box-readonly input-height32">
               <input 
                 type="text" 
-                v-model="storeData.id"
+                v-model="store_id"
                 class="input-box-input input-box-readonly input-padding"
                 readonly
               >
@@ -68,169 +48,162 @@
           </div>
           <div class="flex flex-end">
             <div><p>店舗名</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
+            <div class="input-box input-width600 input-width60p  input-height32">
               <input 
                 type="text" 
-                v-model="storeData.store_name"
-                class="input-box-input input-box-readonly input-padding"
-                readonly
+                v-model="store_name"
+                class="input-box-input input-padding"
               >
             </div>
           </div>
           <div class="flex flex-end">
             <div><p>エリア</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
-              <input 
+            <div class="input-box input-width600 input-width60p  input-height32">
+              <select
                 type="text" 
-                v-model="storeData.area.area_name"
-                class="input-box-input input-box-readonly input-padding"
-                readonly
+                v-model="area_name"
+                class="input-box-select input-padding"
               >
+                <option 
+                  v-for="areaData in this.areasData" 
+                  :key="areaData.id"
+                >{{areaData.area_name}}</option>
+              </select>
             </div>
           </div>
           <div class="flex flex-end">
             <div><p>ジャンル</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
-              <input 
+            <div class="input-box input-width600 input-width60p  input-height32">
+              <select 
                 type="text" 
-                v-model="storeData.genre.genre_name"
-                class="input-box-input input-box-readonly input-padding"
-                readonly
+                v-model="genre_name"
+                class="input-box-select input-padding"
               >
+                <option 
+                  v-for="genreData in this.genresData" 
+                  :key="genreData.id"
+                >{{genreData.genre_name}}</option>
+              </select>
             </div>
           </div>
           <div class="flex flex-end">
             <div><p>説明</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
-              <input 
-                type="text" 
-                v-model="storeData.description"
-                class="input-box-input input-box-readonly input-padding"
-                readonly
-              >
+            <div class="input-box input-width600 input-width60p input-height100">
+              <textarea 
+                v-model="description"
+                class="input-box-input input-padding"
+              ></textarea>
             </div>
           </div>
           <div class="flex flex-end">
             <div><p>画像</p></div>
-            <div class="input-box input-width243 input-width60p  input-box-readonly input-height32">
+            <div class="input-box input-width600 input-width60p input-height32">
               <input 
-                type="text" 
-                v-model="storeData.image_url"
-                class="input-box-input input-box-readonly input-padding"
+                type="file" 
+                @change="fileSelected" 
+                class="input-box-input input-padding"
                 readonly
               >
             </div>
           </div>
 
           <button 
-            @click="reservationPatch()"
+            @click="dataSend()"
             class="input-box input-width243 input-width60p input-box-button"
           >店舗情報変更</button>
-        <!-- <div 
-          v-for="storeData in storesData" 
-          :key="storeData.id"
-        > -->
-          <!-- <StoreBox 
-            v-if="storeData.user_id != null" 
-            key="userFavorite"
-            :storeData = "storeData"
-            @favoriteDelete="favoriteDelete" 
-            class="store-box"
-          ></StoreBox> -->
-        <!-- </div> -->
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import StoreBox from '../components/StoreBox.vue'
 import axios from "axios";
 
 export default {
-  // components: {
-    // StoreBox
-  // },
   props: ["shop_id"],
   data(){
     return {
-      reservationsData:"",
-      storesData:"",
-      storeData:"",
+      areasData:{},
+      genresData:"",
+
+      store_id:"",
+      store_name:"",
+      area_name:"",
+      genre_name:"",
+      description:"",
+      fileInfo:"",
     };
   },
   methods: {
-    // async reservationDalete(reservationId){
-    //   const response = await axios.delete("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-    //     params: {reservation_id: reservationId}
-    //   });
-    //   console.log(response);
-    //   this.$router.push({path: '/done/3'});
-    // },
+    fileSelected(event){
+      this.fileInfo = event.target.files[0];
+    },
 
-    // reservationPatch(storeId, reservationId) {
-    //   this.$router.push({ name: "Detail", params: { shop_id: storeId , reservationId: reservationId}});
-    // },
+    dataSend(){
+      this.dataUpdate();
+      if(this.fileInfo != ""){
+        this.fileUpload();
+      }
+    },
 
-    // favoriteDelete(store_id){
-    //   for(let storeData of this.storesData){
-    //     if(storeData.id == store_id){
-    //       storeData.user_id = null;
-    //     }
-    //   }
-    // },
+    async dataUpdate(){
+      const areaData = this.areasData.find((areaData) => {
+          return (areaData.area_name == this.area_name);
+      });
+      const genreData = this.genresData.find((genreData) => {
+          return (genreData.genre_name == this.genre_name);
+      });
+      const data = {
+        store_name: this.store_name,
+        area_id: areaData.id,
+        genre_id: genreData.id,
+        description: this.description,
+      };
+      const response = await axios.patch(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
+        data,
+        { params: {params:"dataUpdate"} }
+      );
+      console.log(response);
+    },
 
-    // reservationRating(reservationData, num){
-    //   reservationData.rating = num;
-    //   this.$forceUpdate();
-    // },
+    async fileUpload(){
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      formData.append('file',this.fileInfo);
+      console.log(formData);
+      const response = await axios.post(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
+        formData,
+        { params: {params:"fileUpload"}, header: {"Content-Type": "multipart/form-data"} }
+      );
+      console.log(response);
+    },
   },
 
   computed: {
-    // createReservationsData(){
-    //   for(let reservationData of this.reservationsData){
-    //     reservationData["num"] = this.reservationsData.findIndex(({id}) => id === reservationData.id)+1;
-    //     reservationData["time"] = reservationData.time.substr(0, 5);
-    //     reservationData["rating"] = 3;
-    //   }
-    //   return this.reservationsData;
-    // },
 
-    // createRatingStartTime(){
-    //   const today = new Date();
-    //   const startDateTime = today;
-    //   startDateTime.setMinutes(startDateTime.getMinutes() +30);
-
-    //   const startYear = startDateTime.getFullYear();
-    //   const startMonth = ("0"+ (startDateTime.getMonth() + 1) ).slice(-2);
-    //   const startDate = ("0"+ startDateTime.getDate() ).slice(-2);
-    //   const startHours = ("0"+ startDateTime.getHours() ).slice(-2);
-    //   const startMinutes = ("0"+ startDateTime.getMinutes() ).slice(-2);
-
-    //   return startYear + "-" + startMonth + "-" + startDate + "-" + startHours + ":" + startMinutes;
-    // },
   },
 
   async created(){
-    // const storesDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store", {
-    //   params: {user_id : this.$store.state.user_id}
-    // });
-    // const reservationsDataPromise = axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-    //   params: {user_id : this.$store.state.user_id}
-    // });
-    // this.storesData = (await storesDataPromise).data.data;
-    // this.reservationsData = (await reservationsDataPromise).data.data;
-
     const response = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id,{
       params: {user_id : this.$store.state.user_id}
     });
-    this.storeData = response.data.data;
+    this.store_id = response.data.data.id;
+    this.store_name = response.data.data.store_name;
+    this.area_name = response.data.data.area.area_name;
+    this.genre_name = response.data.data.genre.genre_name;
+    this.description = response.data.data.description;
+
+    this.areasData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/area")).data.data;
+    this.genresData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/genre")).data.data;
   }
 }
 </script>
 
 <style scoped>
-.my-page{
+.management-store{
   margin-bottom: 40px;
 }
 
@@ -313,6 +286,24 @@ export default {
 .store-box{
   margin: 10px;
 } 
+
+.input-width600{
+  width: 600px;
+}
+
+.input-height100{
+  height: 100px;
+}
+
+.input-box-button{
+  background-color: #d4a701;
+  border-color: #775d00;
+}
+
+.input-box-readonly{
+  border-color: #c4c4c4;
+  cursor: not-allowed;
+}
 
 @media screen and (max-width : 480px) {
   .no-flex{
