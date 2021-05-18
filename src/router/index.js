@@ -8,6 +8,8 @@ import MyPage from '../views/MyPage.vue'
 import Detail from '../views/Detail.vue'
 import Done from '../views/Done.vue'
 import ManagementStore from '../views/ManagementStore.vue'
+import ManagementReservation from '../views/ManagementReservation.vue'
+import Administrate from '../views/Administrate.vue'
 
 Vue.use(VueRouter)
 
@@ -50,10 +52,20 @@ const routes = [
     props: true,
   },
   {
-    path: "/managementstore/:shop_id",
+    path: "/management-reservation",
+    name: "ManagementReservation",
+    component: ManagementReservation,
+  },
+  {
+    path: "/management-store/:shop_id",
     name: "ManagementStore",
     component: ManagementStore,
     props: true,
+  },
+  {
+    path: "/administrate",
+    name: "Administrate",
+    component: Administrate,
   },
 
 ]

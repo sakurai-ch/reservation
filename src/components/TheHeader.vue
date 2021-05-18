@@ -15,6 +15,18 @@
           <ul><a @click="$router.push({path: '/'})">店舗一覧</a></ul>
           <ul><a @click="$router.push({path: '/mypage'})">マイページ</a></ul>
           <ul><a @click="logout">ログアウト</a></ul>
+          <ul>
+            <button 
+              v-if="$store.state.manager != null && $store.state.manager" 
+              @click="$router.push({path: '/management-reservation'})" 
+              class="input-box input-height43 input-box-button managemant"
+              >店舗<br>管理</button>
+            <button 
+              v-if="$store.state.administrator != null && $store.state.administrator" 
+              @click="$router.push({path: '/administrate'})" 
+              class="input-box input-height43 input-box-button administrate"
+              >全体<br>管理</button>
+          </ul>
         </li>
         <li 
           v-else 
@@ -108,6 +120,18 @@ export default {
 
 .hamburger{
   display: none;
+}
+
+.managemant{
+  vertical-align: middle;
+  background-color: #d4a701;
+  border-color: #775d00;
+}
+
+.administrate{
+  vertical-align: middle;
+  background-color: #9b9067;
+  border-color: #665f48;
 }
 
 @media screen and (max-width : 480px){

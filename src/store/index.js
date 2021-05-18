@@ -13,6 +13,8 @@ export default new Vuex.Store({
     user_name: "",
     email: "",
     token: "",
+    manager: null,
+    administrator: null,
   },
   mutations: {
     auth(state, payload) {
@@ -30,6 +32,12 @@ export default new Vuex.Store({
     token(state, payload) {
       state.token = payload;
     },
+    manager(state, payload) {
+      state.manager = payload;
+    },
+    administrator(state, payload) {
+      state.administrator = payload;
+    },
   },
   actions: {
     async login({ commit }, { email, password }) {
@@ -45,6 +53,8 @@ export default new Vuex.Store({
       commit("user_id", responseLogin.data.user_data.id);
       commit("user_name", responseLogin.data.user_data.user_name);
       commit("email", responseLogin.data.user_data.email);
+      commit("manager", responseLogin.data.user_data.manager);
+      commit("administrator", responseLogin.data.user_data.administrator);
     },     
 
     async logout({ commit }) {
@@ -60,6 +70,8 @@ export default new Vuex.Store({
       commit("user_name", "");
       commit("email", "");
       commit("token", "");
+      commit("manager", null);
+      commit("administrator", null);
     },
   },
   modules: {

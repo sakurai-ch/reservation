@@ -1,6 +1,6 @@
 <template>
   <div class="management-store">
-    <div><p class="title">店舗管理ページ</p></div>
+    <div><p class="title">店舗情報 管理ページ</p></div>
     <div class="flex no-flex top">
       <div class="left-side">
         <div class="my-data">
@@ -10,8 +10,8 @@
           <p>{{$store.state.email}}</p><br>
 
           <!-- <div 
-            v-for="reservationData in createReservationsData" 
-            :key="reservationData.id"
+            v-for="storeData in createstoresData" 
+            :key="storeData.id"
           > -->
             <div class="flex">
               <div>
@@ -25,9 +25,9 @@
               <div 
                 class="potition-top">
                 <button 
-                  @click="$router.push({path: '/managementstore/1'})" 
+                  @click="$router.push({path: '/management-store/1'})" 
                   class="input-box input-height43 input-box-button"
-                >内容<br>変更</button>
+                >情報<br>変更</button>
               </div>
             </div>
           <!-- </div> -->
@@ -303,6 +303,10 @@ export default {
 .input-box-readonly{
   border-color: #c4c4c4;
   cursor: not-allowed;
+}
+
+.input-box{
+  border-color: #775d00;;
 }
 
 @media screen and (max-width : 480px) {
