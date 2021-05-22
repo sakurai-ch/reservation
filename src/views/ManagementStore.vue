@@ -4,33 +4,6 @@
     <div class="flex no-flex top">
       <div class="left-side">
         <MyData @getStoreData = "getStoreData"></MyData>
-        <!-- <div class="my-data">
-          <p class="sub-title">■名前</p>
-          <p>{{$store.state.user_name}}</p><br>
-          <p class="sub-title">■メールアドレス</p>
-          <p>{{$store.state.email}}</p><br>
-
-          <div 
-            v-for="(storeData, index) in storesData" 
-            :key="storeData.id"
-          >
-            <div class="flex">
-              <div>
-                <p class="sub-title">■管理店舗 {{index+1}}</p>
-                <p>店舗番号：{{storeData.store.id}}</p>
-                <p>店舗名：{{storeData.store.store_name}}</p>
-              </div>
-
-              <div 
-                class="potition-top">
-                <button 
-                  @click="pageTransition(storeData.store.id)"
-                  class="input-box input-height43 input-box-button"
-                >情報<br>変更</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
       </div>
       
       <div class="right-side">
@@ -133,8 +106,6 @@ export default {
   },
   data(){
     return {
-      // storesData:{},
-
       areasData:{},
       genresData:{},
 
@@ -150,7 +121,6 @@ export default {
   methods: {
     fileSelected(event){
       this.fileInfo = event.target.files[0];
-      console.log(this.fileInfo.name);
     },
 
     dataSend(){
@@ -176,7 +146,9 @@ export default {
       const response = await axios.patch(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
         data,
-        { params: {params:"dataUpdate"} }
+        { 
+          headers: { Authorization: 'Bearer ' + this.$store.state.token }
+        }
       );
       console.log(response);
     },
@@ -185,19 +157,26 @@ export default {
       const formData = new FormData();
       formData.append('_method', 'PATCH');
       formData.append('file',this.fileInfo);
-      console.log(formData);
       const response = await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
         formData,
-        { params: {params:"fileUpload"}, header: {"Content-Type": "multipart/form-data"} }
+        { 
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: 'Bearer ' + this.$store.state.token
+          } 
+        }
       );
       console.log(response);
     },
 
     async getStoreData(store_id){
-      const responseDetail = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + store_id,
-      {params: {user_id : this.$store.state.user_id}}
-    );
+      const responseDetail = await axios.get(
+        "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + store_id, 
+        {
+          headers: { Authorization: 'Bearer ' + this.$store.state.token }
+        }
+      );
       this.store_id = responseDetail.data.data.id;
       this.store_name = responseDetail.data.data.store_name;
       this.area_name = responseDetail.data.data.area.area_name;
@@ -205,11 +184,6 @@ export default {
       this.description = responseDetail.data.data.description;
       console.log(responseDetail);
     },
-
-    // pageTransition(nextShopId){
-    //   this.getStoreData(nextShopId);
-    //   this.$router.push({path: '/management-store/' + nextShopId});
-    // },
   },
 
   computed: {
@@ -217,13 +191,6 @@ export default {
   },
 
   async created(){
-    // const responseStores = await axios.get(
-    //   "https://mysterious-fjord-19119.herokuapp.com/api/v1/manager",
-    //   { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
-    // );
-    // this.storesData = responseStores.data.data;
-    // console.log(responseStores);
-
     this.getStoreData(this.shop_id);
     this.areasData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/area")).data.data;
     this.genresData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/genre")).data.data;
@@ -250,71 +217,6 @@ export default {
   box-sizing: border-box;
   width: 25%;
 }
-
-/* .my-data{
-  border: solid 2px #c4c4c4;
-  border-radius: 10px;
-  margin: 10px 5px 0 5px;
-  padding: 15px 15px 5px 20px;
-  text-align: start;
-} */
-
-/* .sub-title{
-  margin-left: -5px;
-  font-weight: bold;
-} */
-
-.rating-box{
-  position: relative;
-}
-
-/* .potition-top{
-  margin-top: 18px;
-  margin-bottom: auto;
-} */
-
-.comment{
-  font-size: 11px;
-  font-weight: bold;
-  color: #ffc700;
-}
-
-.rating{
-  font-size: 26px;
-  padding: 0;
-  border:none;
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0);
-  color: #ffc700;
-}
-
-.color-red{
-  border-color: #ff5544;
-  background-color: #ffaa99;
-}
-
-.thanks{
-  width: 210px;
-  height: 50px;
-  top: 20px;
-  position: absolute;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content:space-around;
-  color: #ffc700;
-}
-
-.store-boxes{
-  width: 75%;
-  display: flex;
-  flex-wrap:wrap;
-  margin-bottom: auto;
-} 
-
-.store-box{
-  margin: 10px;
-} 
 
 .input-box-select{
   padding-left: 0px;
@@ -355,7 +257,6 @@ export default {
   border: solid 1px #775d00;
   border-radius: 5px;
   background-color: #d4a701;
-  /* width: 500px; */
   cursor: pointer;
 }
 
@@ -365,7 +266,6 @@ export default {
 
 .file-send{
   display: none;
-  /* opacity: 0; */
 }
 
 @media screen and (max-width : 480px) {
@@ -378,25 +278,6 @@ export default {
   .left-side{
     width: 93%;
     margin: 0 auto;
-  }
-  
-  .thanks{
-    width: 80vw;
-  }
-
-  .store-boxes{
-    width: 100%;
-    margin-top: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-
-  .store-boxes div{
-    width: 95%;
-  }
-
-  .store-box{
-    margin: 8px auto;
   }
 
   .right-side{
