@@ -146,7 +146,6 @@ export default {
     });
     const reservationsDataPromise = axios.get(
       "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
-        // params: {user_id : this.$store.state.user_id},
         headers: { Authorization: 'Bearer ' + this.$store.state.token } 
     });
     this.storesData = (await storesDataPromise).data.data;

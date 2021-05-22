@@ -3,41 +3,40 @@
     <div><p class="title">店舗情報 管理ページ</p></div>
     <div class="flex no-flex top">
       <div class="left-side">
-        <div class="my-data">
+        <MyData @getStoreData = "getStoreData"></MyData>
+        <!-- <div class="my-data">
           <p class="sub-title">■名前</p>
           <p>{{$store.state.user_name}}</p><br>
           <p class="sub-title">■メールアドレス</p>
           <p>{{$store.state.email}}</p><br>
 
-          <!-- <div 
-            v-for="storeData in createstoresData" 
+          <div 
+            v-for="(storeData, index) in storesData" 
             :key="storeData.id"
-          > -->
+          >
             <div class="flex">
               <div>
-                <p class="sub-title">■管理店舗 1</p>
-                <p>店舗番号：1</p>
-                <p>店舗名：aaa</p>
-                <p>エリア：bbb</p>
-                <p>ジャンル：ccc</p>
+                <p class="sub-title">■管理店舗 {{index+1}}</p>
+                <p>店舗番号：{{storeData.store.id}}</p>
+                <p>店舗名：{{storeData.store.store_name}}</p>
               </div>
 
               <div 
                 class="potition-top">
                 <button 
-                  @click="$router.push({path: '/management-store/1'})" 
+                  @click="pageTransition(storeData.store.id)"
                   class="input-box input-height43 input-box-button"
                 >情報<br>変更</button>
               </div>
             </div>
-          <!-- </div> -->
-        </div>
+          </div>
+        </div> -->
       </div>
       
-      <div>
+      <div class="right-side">
           <div class="flex flex-end">
             <div><p>店舗ID</p></div>
-            <div class="input-box input-width600 input-width60p  input-box-readonly input-height32">
+            <div class="input-box input-width600 input-width70p  input-box-readonly input-height32">
               <input 
                 type="text" 
                 v-model="store_id"
@@ -48,7 +47,7 @@
           </div>
           <div class="flex flex-end">
             <div><p>店舗名</p></div>
-            <div class="input-box input-width600 input-width60p  input-height32">
+            <div class="input-box input-width600 input-width70p  input-height32">
               <input 
                 type="text" 
                 v-model="store_name"
@@ -58,7 +57,7 @@
           </div>
           <div class="flex flex-end">
             <div><p>エリア</p></div>
-            <div class="input-box input-width600 input-width60p  input-height32">
+            <div class="input-box input-width600 input-width70p  input-height32">
               <select
                 type="text" 
                 v-model="area_name"
@@ -73,7 +72,7 @@
           </div>
           <div class="flex flex-end">
             <div><p>ジャンル</p></div>
-            <div class="input-box input-width600 input-width60p  input-height32">
+            <div class="input-box input-width600 input-width70p  input-height32">
               <select 
                 type="text" 
                 v-model="genre_name"
@@ -88,20 +87,26 @@
           </div>
           <div class="flex flex-end">
             <div><p>説明</p></div>
-            <div class="input-box input-width600 input-width60p input-height100">
+            <div class="input-box input-width600 input-width70p input-height100">
               <textarea 
                 v-model="description"
-                class="input-box-input input-padding"
+                class="input-box-input input-padding inout-textarea"
               ></textarea>
             </div>
           </div>
           <div class="flex flex-end">
             <div><p>画像</p></div>
-            <div class="input-box input-width600 input-width60p input-height32">
+            <div class="input-box input-width600 input-width70p input-height32 flex-left">
+              <label 
+                for="file" 
+                class="file-send-label"
+              >選択</label>
+              <span>{{fileInfo.name}}</span>
               <input 
                 type="file" 
+                id="file"
                 @change="fileSelected" 
-                class="input-box-input input-padding"
+                class="input-box-input input-padding file-send"
                 readonly
               >
             </div>
@@ -109,7 +114,7 @@
 
           <button 
             @click="dataSend()"
-            class="input-box input-width243 input-width60p input-box-button"
+            class="input-box input-width243 input-width70p input-box-button"
           >店舗情報変更</button>
 
       </div>
@@ -118,14 +123,20 @@
 </template>
 
 <script>
+import MyData from '../components/MyData.vue'
 import axios from "axios";
 
 export default {
   props: ["shop_id"],
+  components: {
+    MyData
+  },
   data(){
     return {
+      // storesData:{},
+
       areasData:{},
-      genresData:"",
+      genresData:{},
 
       store_id:"",
       store_name:"",
@@ -135,9 +146,11 @@ export default {
       fileInfo:"",
     };
   },
+
   methods: {
     fileSelected(event){
       this.fileInfo = event.target.files[0];
+      console.log(this.fileInfo.name);
     },
 
     dataSend(){
@@ -180,6 +193,23 @@ export default {
       );
       console.log(response);
     },
+
+    async getStoreData(store_id){
+      const responseDetail = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + store_id,
+      {params: {user_id : this.$store.state.user_id}}
+    );
+      this.store_id = responseDetail.data.data.id;
+      this.store_name = responseDetail.data.data.store_name;
+      this.area_name = responseDetail.data.data.area.area_name;
+      this.genre_name = responseDetail.data.data.genre.genre_name;
+      this.description = responseDetail.data.data.description;
+      console.log(responseDetail);
+    },
+
+    // pageTransition(nextShopId){
+    //   this.getStoreData(nextShopId);
+    //   this.$router.push({path: '/management-store/' + nextShopId});
+    // },
   },
 
   computed: {
@@ -187,15 +217,14 @@ export default {
   },
 
   async created(){
-    const response = await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id,{
-      params: {user_id : this.$store.state.user_id}
-    });
-    this.store_id = response.data.data.id;
-    this.store_name = response.data.data.store_name;
-    this.area_name = response.data.data.area.area_name;
-    this.genre_name = response.data.data.genre.genre_name;
-    this.description = response.data.data.description;
+    // const responseStores = await axios.get(
+    //   "https://mysterious-fjord-19119.herokuapp.com/api/v1/manager",
+    //   { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
+    // );
+    // this.storesData = responseStores.data.data;
+    // console.log(responseStores);
 
+    this.getStoreData(this.shop_id);
     this.areasData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/area")).data.data;
     this.genresData = (await axios.get("https://mysterious-fjord-19119.herokuapp.com/api/v1/genre")).data.data;
   }
@@ -222,27 +251,27 @@ export default {
   width: 25%;
 }
 
-.my-data{
+/* .my-data{
   border: solid 2px #c4c4c4;
   border-radius: 10px;
   margin: 10px 5px 0 5px;
   padding: 15px 15px 5px 20px;
   text-align: start;
-}
+} */
 
-.sub-title{
+/* .sub-title{
   margin-left: -5px;
   font-weight: bold;
-}
+} */
 
 .rating-box{
   position: relative;
 }
 
-.potition-top{
+/* .potition-top{
   margin-top: 18px;
   margin-bottom: auto;
-}
+} */
 
 .comment{
   font-size: 11px;
@@ -287,6 +316,14 @@ export default {
   margin: 10px;
 } 
 
+.input-box-select{
+  padding-left: 0px;
+}
+
+.inout-textarea{
+  width: 100%;
+}
+
 .input-width600{
   width: 600px;
 }
@@ -307,6 +344,28 @@ export default {
 
 .input-box{
   border-color: #775d00;;
+}
+
+.file-send-label{
+  height: 18px;
+  font-size: 14px;
+  margin: 2px 10px 2px 30px;;
+  padding: 2px;
+  padding-top: 1px;
+  border: solid 1px #775d00;
+  border-radius: 5px;
+  background-color: #d4a701;
+  /* width: 500px; */
+  cursor: pointer;
+}
+
+.flex-left{
+  display: flex;
+}
+
+.file-send{
+  display: none;
+  /* opacity: 0; */
 }
 
 @media screen and (max-width : 480px) {
@@ -339,6 +398,16 @@ export default {
   .store-box{
     margin: 8px auto;
   }
+
+  .right-side{
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .input-width70p{
+    width: 70%;
+  }
+
 }
 
 </style>

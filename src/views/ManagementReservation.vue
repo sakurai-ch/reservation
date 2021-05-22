@@ -3,16 +3,18 @@
     <div><p class="title">店舗予約 管理ページ</p></div>
     <div class="flex no-flex top">
       <div class="left-side">
-        <div class="my-data">
+        <MyData></MyData>
+        <!-- <MyData @getStoreData = "getStoreData"></MyData> -->
+        <!-- <div class="my-data">
           <p class="sub-title">■名前</p>
           <p>{{$store.state.user_name}}</p><br>
           <p class="sub-title">■メールアドレス</p>
           <p>{{$store.state.email}}</p><br>
 
-          <!-- <div 
+          <div 
             v-for="storeData in storesData" 
             :key="storeData.id"
-          > -->
+          >
             <div class="flex">
               <div>
                 <p class="sub-title">■管理店舗 1</p>
@@ -29,16 +31,16 @@
                   class="input-box input-height43 input-box-button"
                 >情報<br>変更</button>
               </div>
-            </div>
+            </div> -->
           <!-- </div> -->
-        </div>
+        <!-- </div> -->
       </div>
       
       <div class="right-side">
-        <div class="flex right-side">
+        <div class="flex no-flex">
           <div class="flex">
-            <div><p>店舗</p></div>
-            <div class="input-box input-width184 input-width60p  input-height32">
+            <div class="flex-end"><p>店名</p></div>
+            <div class="input-box input-width184 input-width70p  input-height32">
               <select
                 type="text" 
                 v-model="store_name"
@@ -52,8 +54,8 @@
             </div>
           </div>
           <div class="flex">
-            <div><p>予約日</p></div>
-            <div class="input-box input-width184 input-width60p  input-height32">
+            <div class="flex-end"><p>予約日</p></div>
+            <div class="input-box input-width184 input-width70p input-height32">
               <input 
                 type="date" 
                 v-model="date"
@@ -64,37 +66,41 @@
 
           <button 
             @click="reservationSearch()"
-            class="input-box input-width184 input-width60p input-box-button"
+            class="input-box input-width184 input-width70p input-box-button"
           >予約情報確認</button>
         </div>
 
-          <table>
+          <table class="moble">
             <tr>
               <th>予約<br>番号</th>
-              <th>予約日</th>
-              <th>予約時間</th>
+              <!-- <th>予約日</th> -->
+              <th>予約<br>時間</th>
               <th>人数</th>
-              <th>ユーザー<br>番号</th>
-              <th>ユーザー名</th>
-              <th>メールアドレス</th>
-              <th>評価</th>
-              <th>コメント</th>
+              <th>顧客<br>番号</th>
+              <th>顧客名</th>
+              <th>メール<br>アドレス</th>
+              <th class="moble-noshow">評価</th>
+              <th class="moble-noshow">コメント</th>
             </tr>
             <tr 
               v-for="(reservationData, index) in reservationsData"
               :key="index"
             >
               <td>{{reservationData.id}}</td>
-              <td>{{reservationData.date}}</td>
-              <td>{{reservationData.time}}</td>
+              <!-- <td>{{reservationData.date}}</td> -->
+              <td>{{reservationData.time.slice(0, 5)}}</td>
               <td>{{reservationData.num_of_users}}</td>
               <td>{{reservationData.user_id}}</td>
               <td>{{reservationData.user.user_name}}</td>
               <td>{{reservationData.user.email}}</td>
-              <td>{{reservationData.rating}}</td>
-              <td>
-                <div class="store-comment">
-                  {{reservationData.comment}}
+              <td class="moble-noshow">{{reservationData.rating}}</td>
+              <td class="moble-noshow">
+                <div 
+                  class="store-comment"
+                   :class="comment_show"
+                  @click="showComment()"
+                >
+                  <span>{{reservationData.comment}}</span>
                 </div>
               </td>
             </tr>
@@ -106,10 +112,14 @@
 </template>
 
 <script>
+import MyData from '../components/MyData.vue'
 import axios from "axios";
 
 export default {
   props: ["shop_id"],
+  components: {
+    MyData
+  },
   data(){
     return {
       storesData:{},
@@ -117,7 +127,9 @@ export default {
 
       store_id:"",
       store_name:"",
-      date:""
+      date:"",
+
+      comment_show:"comment-noshow",
     };
   },
   methods: {
@@ -137,10 +149,17 @@ export default {
       console.log(response);
       this.reservationsData = response.data.data;
     },
+
+    showComment(){
+      if(this.comment_show=="comment-noshow"){
+        this.comment_show = "comment-show"
+      }else{
+        this.comment_show = "comment-noshow"
+      }
+    }
   },
 
   computed: {
-
   },
 
   async created(){
@@ -189,6 +208,10 @@ export default {
 .potition-top{
   margin-top: 18px;
   margin-bottom: auto;
+}
+
+.moble{
+  line-height: 18px;
 }
 
 .comment{
@@ -275,11 +298,20 @@ th{
 }
 
 .store-comment{
-  width: 50px;
+  color: blue;
+  cursor: pointer;
+  width: 100px;
   height: 32px;
   line-height: 32px;
   overflow:hidden;
 }
+
+.comment-show{
+  width: auto;
+  height: 100%;
+  line-height: 18px;
+}
+
 
 table {
   border: 1px solid #aaa;
@@ -350,6 +382,29 @@ table tbody tr:last-child th:last-child {
 
   .store-box{
     margin: 8px auto;
+  }
+
+  .right-side{
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .input-width70p{
+    width: 70%;
+  }
+
+  .flex-end{
+    width: 25%;
+    text-align: end;
+  }
+
+  .moble{
+    font-size: 10px;
+    line-height: 12px;
+  }
+
+  .moble-noshow{
+    display: none;
   }
 }
 

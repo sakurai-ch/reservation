@@ -250,7 +250,6 @@ export default {
     return {
       reservationData:{
         reservation_id: "",
-        // user_id: this.$store.state.user_id,
         store_id: this.shop_id,
         date: "",
         time: "",
@@ -470,6 +469,7 @@ input[type=number]::-webkit-inner-spin-button {
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0);
   color: #ffc700;
+  outline: none;
 }
 
 .right-side{

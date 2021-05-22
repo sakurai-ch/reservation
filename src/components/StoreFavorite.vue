@@ -82,6 +82,7 @@ export default {
   border:none;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0);
+  outline: none;
 }
 
 .yellow{
