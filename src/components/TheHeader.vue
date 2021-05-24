@@ -32,7 +32,7 @@
           </ul>
           <ul class="moble-ul-button">
             <button 
-              v-if="$store.state.manager != null && $store.state.manager" 
+              v-if="$store.state.manager" 
               @click="$router.push({path: '/management-reservation'})" 
               class="input-box input-height43 input-box-button managemant management-moble"
               >
@@ -41,7 +41,7 @@
                 <span class="management-moble-noshow">管理</span>
               </button>
             <button 
-              v-if="$store.state.administrator != null && $store.state.administrator" 
+              v-if="$store.state.administrator" 
               @click="$router.push({path: '/administrate'})" 
               class="input-box input-height43 input-box-button administrate management-moble"
               >

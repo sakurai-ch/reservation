@@ -13,8 +13,8 @@ export default new Vuex.Store({
     user_name: "",
     email: "",
     token: "",
-    manager: null,
-    administrator: null,
+    manager: false,
+    administrator: false,
   },
   mutations: {
     auth(state, payload) {
@@ -70,8 +70,8 @@ export default new Vuex.Store({
       commit("user_name", "");
       commit("email", "");
       commit("token", "");
-      commit("manager", null);
-      commit("administrator", null);
+      commit("manager", false);
+      commit("administrator", false);
     },
   },
   modules: {
