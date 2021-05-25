@@ -31,7 +31,7 @@
             <td><input type="text" v-model="newManager.user_name" class="input-width70 input-box input-height32"></td>
             <td><input type="text" v-model="newManager.email" class="input-width70 input-box input-height32"></td>
             <td><input type="text" v-model="newManager.password" class="input-width70 input-box input-height32"></td>
-            <td><button @click="crateManagaer()" class="input-box input-height32 input-box-button">作成</button></td>
+            <td><button @click="createManagaer()" class="input-box input-height32 input-box-button">作成</button></td>
           </tr>
         </table>
         
@@ -157,7 +157,7 @@ export default {
     //   console.log(response);
     // },
 
-    async crateManagaer(){
+    async createManagaer(){
       await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/user", 
         {
