@@ -269,12 +269,12 @@ export default {
   },
   methods: {
     async reservationPost(){
-      const response = await axios.post(
+      await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
         this.reservationData,
         { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
       );
-      console.log(response);
+      // console.log(response);
       router.push({path: '/done/1'});
     },
 
@@ -287,22 +287,22 @@ export default {
         rating: null,
         comment: null,
       };
-      const response = await axios.patch(
+      await axios.patch(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
         reservationPatchData, 
         { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
       );
-      console.log(response);
+      // console.log(response);
       router.push({path: '/done/2'});
     },
 
     async reservationRatingPost(){
-      const response = await axios.patch(
+      await axios.patch(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", 
         this.reservationData, 
         { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
       );
-      console.log(response);
+      // console.log(response);
       router.push({path: '/done/4'});
     },
 

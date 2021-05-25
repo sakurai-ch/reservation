@@ -63,7 +63,7 @@
             <div class="input-box input-width600 input-width70p input-height100">
               <textarea 
                 v-model="description"
-                class="input-box-input input-padding inout-textarea"
+                class="input-box-input input-padding input-textarea"
               ></textarea>
             </div>
           </div>
@@ -87,7 +87,7 @@
 
           <button 
             @click="dataSend()"
-            class="input-box input-width243 input-width70p input-box-button"
+            class="input-box input-width243 input-width70p input-box-button input-height32"
           >店舗情報変更</button>
 
       </div>
@@ -143,21 +143,21 @@ export default {
         genre_id: genreData.id,
         description: this.description,
       };
-      const response = await axios.patch(
+      await axios.patch(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
         data,
         { 
           headers: { Authorization: 'Bearer ' + this.$store.state.token }
         }
       );
-      console.log(response);
+      // console.log(response);
     },
 
     async fileUpload(){
       const formData = new FormData();
       formData.append('_method', 'PATCH');
       formData.append('file',this.fileInfo);
-      const response = await axios.post(
+      await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/store/" + this.shop_id, 
         formData,
         { 
@@ -167,7 +167,7 @@ export default {
           } 
         }
       );
-      console.log(response);
+      // console.log(response);
     },
 
     async getStoreData(store_id){
@@ -182,7 +182,7 @@ export default {
       this.area_name = responseDetail.data.data.area.area_name;
       this.genre_name = responseDetail.data.data.genre.genre_name;
       this.description = responseDetail.data.data.description;
-      console.log(responseDetail);
+      // console.log(responseDetail);
     },
   },
 
@@ -222,8 +222,9 @@ export default {
   padding-left: 0px;
 }
 
-.inout-textarea{
-  width: 100%;
+.input-textarea{
+  width: 88%;
+  resize: none;
 }
 
 .input-width600{

@@ -87,12 +87,12 @@ export default {
   },
   methods: {
     async reservationDalete(reservationId){
-      const response = await axios.delete(
+      await axios.delete(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/reservation", {
           params: {reservation_id: reservationId}, 
           headers: { Authorization: 'Bearer ' + this.$store.state.token }
       });
-      console.log(response);
+      // console.log(response);
       this.$router.push({path: '/done/3'});
     },
 

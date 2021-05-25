@@ -36,7 +36,7 @@
 
           <button 
             @click="reservationSearch()"
-            class="input-box input-width184 input-width70p input-box-button"
+            class="input-box input-width184 input-width70p input-box-button input-height32"
           >予約情報確認</button>
         </div>
 
@@ -114,7 +114,7 @@ export default {
           params: data,
           headers: { Authorization: 'Bearer ' + this.$store.state.token } 
         });
-      console.log(response);
+      // console.log(response);
       this.reservationsData = response.data.data;
     },
 
@@ -169,11 +169,6 @@ export default {
 .input-box-button{
   background-color: #d4a701;
   border-color: #775d00;
-}
-
-.input-box-readonly{
-  border-color: #c4c4c4;
-  cursor: not-allowed;
 }
 
 .input-box{

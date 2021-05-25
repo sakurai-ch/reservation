@@ -40,7 +40,7 @@ export default {
   methods:{
     pageTransition(nextShopId){
       // this.$emit("getStoreData", nextShopId);
-      this.$router.push({path: '/management-store/' + nextShopId});
+      this.$router.push({path: '/management-store/' + nextShopId}, () => {});
       this.$emit("getStoreData", nextShopId);
     },
   },
@@ -51,7 +51,7 @@ export default {
       { headers: { Authorization: 'Bearer ' + this.$store.state.token } }
     );
     this.storesData = responseStores.data.data;
-    console.log(responseStores);
+    // console.log(responseStores);
   }
     
 }

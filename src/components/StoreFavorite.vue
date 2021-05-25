@@ -46,29 +46,27 @@ export default {
   methods: {
     async favoriteDelete(){
       const favorite_data = {
-        // user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
-      const response = await axios.delete(
+      await axios.delete(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/favorite", {
           params: favorite_data, 
           headers: { Authorization: 'Bearer ' + this.$store.state.token }
       });
-      console.log(response);
+      // console.log(response);
       this.$emit("favoriteDelete", this.storeData.id);
     },
 
     async favoritePost(){
       const favorite_data = {
-        // user_id: this.$store.state.user_id,
         store_id: this.storeData.id
       };
-      const response = await axios.post(
+      await axios.post(
         "https://mysterious-fjord-19119.herokuapp.com/api/v1/favorite", 
         favorite_data, 
         {headers: { Authorization: 'Bearer ' + this.$store.state.token }}
       );
-      console.log(response);
+      // console.log(response);
       this.$emit("favoritePost", this.storeData.id);
     }
   }

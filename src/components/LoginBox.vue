@@ -137,13 +137,13 @@ export default {
 
     async register() {
       try{
-        const response = await axios.post(
+        await axios.post(
           "https://mysterious-fjord-19119.herokuapp.com/api/v1/user", {
             user_name: this.user_name,
             email: this.email,
             password: this.password
         });
-        console.log(response);
+        // console.log(response);
         this.$store.dispatch("login", {
           email: this.email,
           password: this.password

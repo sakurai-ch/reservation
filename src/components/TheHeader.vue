@@ -13,13 +13,13 @@
           :class="menu"
         >
           <ul class="moble-ul">
-            <a @click="$router.push({path: '/'})">
+            <a @click="$router.push({path: '/'}, () => {})">
               店舗<br class="mobile-show">
               一覧
             </a>
           </ul>
           <ul class="moble-ul">
-            <a @click="$router.push({path: '/mypage'})">
+            <a @click="$router.push({path: '/mypage'}, () => {})">
               マイ<br class="mobile-show">
               ページ
             </a>
@@ -33,7 +33,7 @@
           <ul class="moble-ul-button">
             <button 
               v-if="$store.state.manager" 
-              @click="$router.push({path: '/management-reservation'})" 
+              @click="$router.push({path: '/management-reservation'}, () => {})" 
               class="input-box input-height43 input-box-button managemant management-moble"
               >
                 <span>店舗</span>
@@ -42,7 +42,7 @@
               </button>
             <button 
               v-if="$store.state.administrator" 
-              @click="$router.push({path: '/administrate'})" 
+              @click="$router.push({path: '/administrate'}, () => {})" 
               class="input-box input-height43 input-box-button administrate management-moble"
               >
                 <span>全体</span>
@@ -58,19 +58,19 @@
           :class="menu"
         >
           <ul>
-            <a @click="$router.push({path: '/'})">
+            <a @click="$router.push({path: '/'}, () => {})">
               店舗<br class="mobile-show">
               一覧
             </a>
           </ul>
           <ul>
-            <a @click="$router.push({path: '/register'})">
+            <a @click="$router.push({path: '/register'}, () => {})">
               会員<br class="mobile-show">
               登録
             </a>
           </ul>
           <ul>
-            <a @click="$router.push({path: '/login'})">
+            <a @click="$router.push({path: '/login'}, () => {})">
               ログ<br class="mobile-show">
               イン
             </a>
@@ -149,7 +149,6 @@ export default {
 
 .menu{
   display: flex;
-  /* line-height: 80px; */
   line-height: 25px;
   margin-top: 12px;
 }
@@ -202,7 +201,6 @@ export default {
   }
 
   .menu{
-    /* width: 400px; */
     width: 320px;
     position: absolute;
     top: 0px;
@@ -210,7 +208,6 @@ export default {
     display: flex;
     font-size: 14px;
     margin-top: 22px;
-    /* line-height: 80px; */
     line-height: 20px;
     opacity: 0;
     transition: 0.8s;
