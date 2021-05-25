@@ -46,7 +46,7 @@ export default new Vuex.Store({
         email: email,
         password: password,
       });
-      console.log(responseLogin);
+      // console.log(responseLogin);
       
       commit("token", responseLogin.data.access_token);
       commit("auth", responseLogin.data.auth);
@@ -64,8 +64,7 @@ export default new Vuex.Store({
         { data: ""},
         { headers: { Authorization: 'Bearer ' + this.state.token } }
       );
-      console.log(responseLogout);
-      // commit("auth", responseLogout.data.auth);
+      // console.log(responseLogout);
       commit("user_id", "");
       commit("user_name", "");
       commit("email", "");
